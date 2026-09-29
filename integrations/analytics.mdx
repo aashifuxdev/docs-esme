@@ -1,0 +1,135 @@
+---
+title: "Add Analytics and Tracking to Your Mintlify Docs Site"
+sidebarTitle: "Analytics"
+description: "Track page views, searches, and user events on your Mintlify docs site by connecting your preferred analytics or product intelligence provider."
+---
+
+Mintlify integrates with the most popular analytics and customer data platforms so you can understand how readers navigate your docs, what they search for, and where they drop off. All providers are configured in `docs.json` — no custom scripts or code changes required.
+
+## Supported providers
+
+<CardGroup cols={3}>
+  <Card title="Google Analytics 4" icon="chart-line" />
+  <Card title="PostHog" icon="chart-bar" />
+  <Card title="Mixpanel" icon="chart-mixed" />
+  <Card title="Amplitude" icon="wave-sine" />
+  <Card title="Hotjar" icon="fire" />
+  <Card title="Plausible" icon="leaf" />
+  <Card title="Fathom" icon="eye" />
+  <Card title="Heap" icon="layer-group" />
+  <Card title="Pirsch" icon="chart-pie" />
+  <Card title="Koala" icon="k" />
+  <Card title="Logtail" icon="scroll" />
+  <Card title="Crisp" icon="message" />
+  <Card title="HubSpot" icon="hubspot" />
+  <Card title="Intercom" icon="intercom" />
+</CardGroup>
+
+---
+
+## Configure analytics in docs.json
+
+Add an `integrations` block to your `docs.json` file and include a key for each provider you want to enable. You can activate multiple providers at once.
+
+```json docs.json
+{
+  "integrations": {
+    "ga4": {
+      "measurementId": "G-XXXXXXXXXX"
+    },
+    "posthog": {
+      "apiKey": "phc_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      "apiHost": "https://app.posthog.com"
+    },
+    "mixpanel": {
+      "projectToken": "YOUR_PROJECT_TOKEN"
+    },
+    "amplitude": {
+      "apiKey": "YOUR_API_KEY"
+    },
+    "hotjar": {
+      "hjid": "YOUR_HOTJAR_ID",
+      "hjsv": "6"
+    },
+    "plausible": {
+      "domain": "docs.yoursite.com"
+    },
+    "fathom": {
+      "siteId": "XXXXXXXX"
+    },
+    "heap": {
+      "appId": "YOUR_APP_ID"
+    },
+    "pirsch": {
+      "id": "YOUR_PIRSCH_ID"
+    },
+    "koala": {
+      "publicApiKey": "pk_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    },
+    "logtail": {
+      "sourceToken": "YOUR_SOURCE_TOKEN"
+    }
+  }
+}
+```
+
+<Note>
+  You only need to include the providers you use. Remove any keys that are not relevant to your project — unused entries have no effect but keeping them tidy avoids confusion.
+</Note>
+
+### Live chat and CRM providers
+
+HubSpot, Intercom, and Crisp can be configured under the same `integrations` block. These providers typically add a live chat widget to your docs in addition to tracking events.
+
+```json docs.json
+{
+  "integrations": {
+    "hubspot": {
+      "portalId": "YOUR_PORTAL_ID"
+    },
+    "intercom": {
+      "appId": "YOUR_APP_ID"
+    },
+    "crisp": {
+      "id": "YOUR_CRISP_WEBSITE_ID"
+    }
+  }
+}
+```
+
+<Tip>
+  Use Intercom or Crisp alongside an analytics provider so you capture both qualitative feedback (chat conversations) and quantitative behaviour (page views, search queries) in one docs setup.
+</Tip>
+
+---
+
+## What gets tracked automatically
+
+Once you add a provider, Mintlify sends the following events without any additional configuration:
+
+<Accordion title="Page views">
+  Every page load fires a standard page view event that includes the page path, title, and referrer. This works with all supported providers.
+</Accordion>
+
+<Accordion title="Search queries">
+  When a reader types a query into Mintlify's built-in search, the search term and result count are sent as an event. Use this data to identify documentation gaps — high-volume searches with zero results are good candidates for new content.
+</Accordion>
+
+<Accordion title="User interactions">
+  Navigation events such as opening the sidebar, switching tabs, and clicking external links are captured automatically. The exact event schema depends on each provider's standard model.
+</Accordion>
+
+---
+
+## Privacy considerations
+
+<Warning>
+  Some analytics providers set third-party cookies or collect personally identifiable information. Review your provider's data processing agreement and update your privacy policy before enabling tracking on a public docs site.
+</Warning>
+
+Keep the following in mind when choosing a provider:
+
+- **Cookie-free options** — Plausible, Fathom, and Pirsch are designed for privacy-first analytics and do not use cookies or collect personal data, which simplifies GDPR and CCPA compliance.
+- **Data residency** — If your users are in the EU, check whether your provider offers EU data hosting (for example, PostHog Cloud EU or a self-hosted PostHog instance).
+- **Consent banners** — If you use a provider that sets cookies, you are responsible for displaying a consent banner. Mintlify does not include a consent management platform; integrate one separately if required.
+- **IP anonymisation** — Google Analytics 4 anonymises IP addresses by default, but verify this is enabled in your GA4 property settings for full compliance.

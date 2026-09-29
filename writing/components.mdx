@@ -1,0 +1,256 @@
+---
+title: "Components Reference: Mintlify Built-In MDX Library"
+sidebarTitle: "Components"
+description: "Add Cards, Steps, Tabs, Accordions, callout boxes, and API parameter fields to your MDX pages with Mintlify's built-in component library."
+---
+
+Mintlify ships a library of MDX components that let you present information more clearly than plain Markdown can. You drop them directly into your `.mdx` files — no imports, no configuration, no build steps. This page covers the most commonly used components with a working example for each.
+
+## Cards and CardGroups
+
+Use `<Card>` to create a single highlighted link or feature callout, and wrap multiple cards in `<CardGroup>` to arrange them in a responsive grid. Cards are ideal for landing pages, navigation hubs, and feature overviews.
+
+```mdx
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get up and running in under five minutes.
+  </Card>
+  <Card title="API Reference" icon="code" href="/reference/docs-json">
+    Explore every endpoint with live examples.
+  </Card>
+  <Card title="SDKs" icon="box" href="/reference/components">
+    Browse official libraries for Python, Node, and Go.
+  </Card>
+  <Card title="Changelog" icon="clock-rotate-left" href="/reference/cli-commands">
+    See what's new in recent releases.
+  </Card>
+</CardGroup>
+```
+
+**Rendered result:**
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get up and running in under five minutes.
+  </Card>
+  <Card title="API Reference" icon="code" href="/reference/docs-json">
+    Explore every endpoint with live examples.
+  </Card>
+  <Card title="SDKs" icon="box" href="/reference/components">
+    Browse official libraries for Python, Node, and Go.
+  </Card>
+  <Card title="Changelog" icon="clock-rotate-left" href="/reference/cli-commands">
+    See what's new in recent releases.
+  </Card>
+</CardGroup>
+
+Set `cols` to `1`, `2`, or `3`. The grid collapses to a single column on mobile automatically.
+
+## Steps and Step
+
+Use `<Steps>` with nested `<Step>` elements for sequential instructions such as installation guides, setup flows, or multi-stage processes. Each step is numbered automatically:
+
+<Steps>
+  <Step title="Install the CLI">
+    Run `npm install -g mint` to install the Mintlify CLI globally.
+  </Step>
+  <Step title="Start the preview server">
+    Navigate to your docs directory and run `mint dev`. The preview opens at `http://localhost:3000`.
+  </Step>
+  <Step title="Make your first edit">
+    Open any `.mdx` file, save a change, and watch the preview update instantly with hot reload.
+  </Step>
+</Steps>
+
+<Tip>
+  You can include any Markdown content inside a `<Step>`, including code blocks, images, and other components.
+</Tip>
+
+## Tabs and Tab
+
+Use `<Tabs>` with nested `<Tab>` elements to show the same concept in multiple variants — for example, the same API call in different programming languages, or the same feature across different operating systems.
+
+Each `<Tab title="...">` becomes a clickable tab. Tabs can contain any content including prose, code blocks, and other components.
+
+<Tabs>
+  <Tab title="Python">
+    Install the Python SDK and make your first API call:
+
+    ```python
+    import mintlify
+    client = mintlify.Client(api_key="YOUR_API_KEY")
+    response = client.documents.list()
+    print(response.data)
+    ```
+  </Tab>
+  <Tab title="Node.js">
+    Install the Node.js SDK and make your first API call:
+
+    ```javascript
+    import Mintlify from "mintlify";
+    const client = new Mintlify({ apiKey: "YOUR_API_KEY" });
+    const response = await client.documents.list();
+    console.log(response.data);
+    ```
+  </Tab>
+  <Tab title="cURL">
+    Use cURL to call the API directly:
+
+    ```bash
+    curl https://api.mintlify.com/v1/documents \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+</Tabs>
+
+## Accordions
+
+Use `<Accordion>` to collapse content that is useful but not essential for most readers — such as FAQs, advanced options, or detailed explanations. Wrap multiple accordions in `<AccordionGroup>` to display them as a unified, bordered list.
+
+```mdx
+<AccordionGroup>
+  <Accordion title="What happens when I exceed my plan limit?" icon="circle-exclamation">
+    When you reach your plan's page limit, new deployments are paused until you upgrade or remove pages. Existing published docs remain accessible.
+  </Accordion>
+  <Accordion title="Can I use a custom domain?" icon="globe">
+    Yes. Add a `CNAME` record pointing to `hosting.mintlify.com` in your DNS provider, then set your custom domain in **Settings → Domain** in the Mintlify dashboard.
+  </Accordion>
+  <Accordion title="How do I invite team members?" icon="user-plus">
+    Navigate to **Settings → Team** and enter the email addresses of your collaborators. They will receive an invitation to join your Mintlify workspace.
+  </Accordion>
+</AccordionGroup>
+```
+
+**Rendered result:**
+
+<AccordionGroup>
+  <Accordion title="What happens when I exceed my plan limit?" icon="circle-exclamation">
+    When you reach your plan's page limit, new deployments are paused until you upgrade or remove pages. Existing published docs remain accessible.
+  </Accordion>
+  <Accordion title="Can I use a custom domain?" icon="globe">
+    Yes. Add a `CNAME` record pointing to `hosting.mintlify.com` in your DNS provider, then set your custom domain in **Settings → Domain** in the Mintlify dashboard.
+  </Accordion>
+  <Accordion title="How do I invite team members?" icon="user-plus">
+    Navigate to **Settings → Team** and enter the email addresses of your collaborators. They will receive an invitation to join your Mintlify workspace.
+  </Accordion>
+</AccordionGroup>
+
+## Callout Boxes
+
+Mintlify provides four callout components for surfacing important information inline. Each has a distinct visual treatment so readers can quickly distinguish the type of message.
+
+### Note
+
+Use `<Note>` for supplementary information that adds context without being urgent.
+
+```mdx
+<Note>
+  API keys are scoped to a single workspace. If you work across multiple
+  Mintlify workspaces, generate a separate key for each one.
+</Note>
+```
+
+<Note>
+  API keys are scoped to a single workspace. If you work across multiple Mintlify workspaces, generate a separate key for each one.
+</Note>
+
+### Tip
+
+Use `<Tip>` for helpful suggestions, shortcuts, or best practices.
+
+```mdx
+<Tip>
+  Run `mint broken-links` before pushing a release to catch any
+  internal links pointing to renamed or deleted pages.
+</Tip>
+```
+
+<Tip>
+  Run `mint broken-links` before pushing a release to catch any internal links pointing to renamed or deleted pages.
+</Tip>
+
+### Warning
+
+Use `<Warning>` for information that could cause data loss, broken deployments, or security issues if ignored.
+
+```mdx
+<Warning>
+  Deleting a deployment is permanent and cannot be undone. Download a
+  backup of your docs repository before proceeding.
+</Warning>
+```
+
+<Warning>
+  Deleting a deployment is permanent and cannot be undone. Download a backup of your docs repository before proceeding.
+</Warning>
+
+### Info
+
+Use `<Info>` for neutral, factual context — such as version notes, platform requirements, or availability notices.
+
+```mdx
+<Info>
+  Custom domain support is available on the **Startup** plan and above.
+  Upgrade in **Settings → Billing** to enable this feature.
+</Info>
+```
+
+<Info>
+  Custom domain support is available on the **Startup** plan and above. Upgrade in **Settings → Billing** to enable this feature.
+</Info>
+
+## ParamField
+
+Use `<ParamField>` to document API request parameters, query strings, and configuration options with type information and descriptions. This component is designed for API reference pages.
+
+```mdx
+<ParamField body="name" type="string" required>
+  The display name for the new document. Must be between 1 and 128 characters.
+</ParamField>
+
+<ParamField body="slug" type="string">
+  A URL-safe identifier for the document. If omitted, Mintlify generates
+  one automatically from the `name` field.
+</ParamField>
+
+<ParamField body="published" type="boolean" default="false">
+  Set to `true` to make the document publicly accessible immediately
+  after creation.
+</ParamField>
+
+<ParamField query="workspace_id" type="string" required>
+  The ID of the workspace in which to create the document. Found in
+  **Settings → General** in the dashboard.
+</ParamField>
+```
+
+**Rendered result:**
+
+<ParamField body="name" type="string" required>
+  The display name for the new document. Must be between 1 and 128 characters.
+</ParamField>
+
+<ParamField body="slug" type="string">
+  A URL-safe identifier for the document. If omitted, Mintlify generates one automatically from the `name` field.
+</ParamField>
+
+<ParamField body="published" type="boolean" default="false">
+  Set to `true` to make the document publicly accessible immediately after creation.
+</ParamField>
+
+<ParamField query="workspace_id" type="string" required>
+  The ID of the workspace in which to create the document. Found in **Settings → General** in the dashboard.
+</ParamField>
+
+The `body` attribute marks the parameter as a request body field. Use `query` for query string parameters, `path` for path parameters, and `header` for request headers.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Code Blocks" icon="code" href="/writing/code-blocks">
+    Add syntax highlighting, filenames, diffs, and multi-language groups.
+  </Card>
+  <Card title="Pages" icon="file" href="/writing/pages">
+    Learn how to structure pages and configure frontmatter.
+  </Card>
+</CardGroup>

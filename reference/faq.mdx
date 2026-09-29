@@ -1,0 +1,78 @@
+---
+title: "Frequently Asked Questions About Mintlify"
+sidebarTitle: "FAQ"
+description: "Quick answers to common Mintlify questions — setup, custom domains, versioning, local preview, analytics, and AI writing tools, all in one place."
+---
+
+Mintlify covers a lot of ground — from signing up and connecting your repository to custom domains, versioning, and AI writing tools. If you can't find the answer you need here, reach out to [support@mintlify.com](mailto:support@mintlify.com) or open a thread in the [Mintlify community](https://mintlify.com/community).
+
+<AccordionGroup>
+
+<Accordion title="How do I sign up for Mintlify?">
+  Visit [app.mintlify.com](https://app.mintlify.com) and create a free account using your GitHub, GitLab, or Google credentials. Once you're in, the onboarding flow walks you through creating your first docs project and connecting a repository. Your site is live in minutes — no infrastructure setup required.
+</Accordion>
+
+<Accordion title="How do I connect my GitHub repository?">
+  During onboarding, Mintlify prompts you to install the **Mintlify GitHub App** on the repository that contains your MDX files. Grant the app read access to your repo, select the branch you want to publish from, and Mintlify handles the rest. Every push to that branch triggers an automatic redeployment of your docs. If you need to update permissions later, go to **Dashboard → Settings → GitHub** and click **Reinstall App**.
+</Accordion>
+
+<Accordion title="Can I use a custom domain?">
+  Yes. Go to **Dashboard → Settings → Custom Domain**, enter the domain you want to use (for example, `docs.yourcompany.com`), and follow the instructions to add a CNAME record in your DNS provider. Mintlify automatically provisions and renews a TLS certificate for your domain. DNS propagation typically takes a few minutes, but can take up to 48 hours depending on your provider. See the [Custom Domain guide](/configuration/custom-domain) for a step-by-step walkthrough.
+</Accordion>
+
+<Accordion title="How do I preview my docs locally?">
+  Install the Mintlify CLI and run the dev server from the root of your docs repository:
+
+  ```bash
+  npm install -g mint
+  mint dev
+  ```
+
+  The dev server starts at `http://localhost:3000` and hot-reloads whenever you save a file. Make sure you are running the command from the directory that contains your `docs.json` file — not a subdirectory. Run `mint update` regularly to stay on the latest CLI version.
+</Accordion>
+
+<Accordion title="Does Mintlify support multiple versions of docs?">
+  Yes. Mintlify supports versioned documentation through the `versions` field in `docs.json`. Define each version with a label and point it to a separate navigation group or tab. Users can then switch between versions using a dropdown in your docs navbar. See the [Versioning guide](/publishing/versioning) for configuration details and examples.
+</Accordion>
+
+<Accordion title="How do I add a search bar to my docs?">
+  Search is enabled by default on every Mintlify site — no configuration is required. Mintlify indexes your content automatically after each deployment and surfaces a keyboard-shortcut-driven search modal (`Cmd+K` / `Ctrl+K`) in your navbar. If you want to bring your own search provider, such as Algolia, configure it under the `search` key in `docs.json`. Visit the [Search integration guide](/integrations/search) for the full list of supported providers and options.
+</Accordion>
+
+<Accordion title="Can I use MDX components in my pages?">
+  Absolutely. Every page in Mintlify is an MDX file, so you can use any of the built-in Mintlify components — `<Card>`, `<Accordion>`, `<Steps>`, `<CodeGroup>`, `<Tabs>`, `<Note>`, `<Warning>`, and more — without importing anything. You can also import and use your own custom React components by placing them in a `components/` directory at the root of your repo and importing them at the top of the relevant MDX file. See the [Components reference](/reference/components) for the full component catalog.
+</Accordion>
+
+<Accordion title="How do I set up AI writing tools with Mintlify?">
+  Mintlify ships with built-in AI writing assistance powered by the Mintlify editor. To enable additional AI integrations — such as a trained chatbot that answers questions about your docs — go to **Dashboard → Settings → AI** and follow the setup wizard. You can customize the AI's name, avatar, and the set of pages it uses as a knowledge source. For the full configuration reference, see the [AI Tools integration guide](/integrations/ai-tools).
+</Accordion>
+
+<Accordion title="What themes are available?">
+  Mintlify offers several built-in themes that control the overall look and feel of your docs site. Set your theme in `docs.json`:
+
+  ```json
+  {
+    "theme": "luma"
+  }
+  ```
+
+  Available themes include `luma`, `willow`, `palm`, `almond`, `aspen`, `maple`, and `sequoia`. Each theme can be further customized through the `colors` field in `docs.json`. See the [Branding guide](/configuration/branding) for a full visual comparison and customization options.
+</Accordion>
+
+<Accordion title="How do I add analytics to my docs site?">
+  Mintlify integrates with the most popular analytics platforms. Add your provider and tracking ID to the `analytics` field in `docs.json`:
+
+  ```json
+  {
+    "analytics": {
+      "gtm": {
+        "tagId": "GTM-XXXXXXX"
+      }
+    }
+  }
+  ```
+
+  Supported providers include Google Tag Manager, Google Analytics 4, Segment, Amplitude, Mixpanel, Hotjar, Fathom, and Plausible. See the [Analytics integration guide](/integrations/analytics) for provider-specific setup instructions and the full list of supported options.
+</Accordion>
+
+</AccordionGroup>

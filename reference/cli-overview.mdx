@@ -1,0 +1,88 @@
+---
+title: "Mintlify CLI Overview"
+sidebarTitle: "CLI Overview"
+description: "Install the Mintlify CLI to preview docs locally, validate your configuration, and check for broken links — all before you push changes to production."
+---
+
+The Mintlify CLI brings your documentation workflow to the terminal. With it, you can spin up a local preview that hot-reloads as you edit, catch configuration errors before they reach production, and audit every link in your docs — all without leaving your development environment.
+
+## What the CLI does
+
+The CLI is the fastest feedback loop available when writing Mintlify documentation. Rather than pushing changes to your connected repository and waiting for a cloud build, you run a single command and see your changes live at `http://localhost:3000` within seconds. The same renderer Mintlify uses in production powers the local server, so what you see locally is what your readers see.
+
+Beyond the development server, the CLI also exposes validation and link-checking commands you can run in CI pipelines to enforce documentation quality on every pull request.
+
+## System requirements
+
+Before installing, confirm your environment meets these requirements:
+
+| Requirement | Minimum version |
+|---|---|
+| Node.js | 18.0.0 or later |
+| npm | 8.0.0 or later |
+| Operating system | macOS, Linux, or Windows (WSL recommended on Windows) |
+
+To check your current Node.js and npm versions, run:
+
+```bash
+node --version
+npm --version
+```
+
+If you need to install or upgrade Node.js, use the [official installer](https://nodejs.org) or a version manager like `nvm` or `fnm`.
+
+## Install the CLI
+
+Install the Mintlify CLI globally so the `mint` command is available anywhere on your system:
+
+```bash
+npm install -g mint
+```
+
+Verify the installation by printing the version:
+
+```bash
+mint --version
+```
+
+<Note>
+  You only need to install the CLI once. After that, use `mint update` any time you want to pull in the latest features and fixes. See [Updating the CLI](#updating-the-cli) below.
+</Note>
+
+## Start a local preview
+
+Navigate to the root directory of your docs repository — the folder that contains your `docs.json` file — and run:
+
+```bash
+mint dev
+```
+
+The CLI starts a local development server at `http://localhost:3000`. It watches your files for changes and hot-reloads the browser automatically, so you can edit MDX files and see the result without manually refreshing.
+
+```
+✓ docs.json loaded
+✓ Navigation built (3 tabs, 12 groups, 48 pages)
+✓ Local server running at http://localhost:3000
+```
+
+<Tip>
+  If port 3000 is already in use, pass a custom port with the `--port` flag:
+
+  ```bash
+  mint dev --port 3333
+  ```
+</Tip>
+
+## Update the CLI
+
+Mintlify releases CLI updates regularly. Run the following command to upgrade to the latest version:
+
+```bash
+mint update
+```
+
+The `update` command fetches the newest package from the npm registry and replaces your current global installation. Your docs files are not modified.
+
+<Note>
+  If you manage multiple projects, running `mint update` before starting a local preview ensures your local renderer matches the version running in Mintlify's production environment, which reduces the chance of layout or rendering surprises at deploy time.
+</Note>

@@ -1,0 +1,154 @@
+---
+title: "Mintlify CLI Commands Reference"
+sidebarTitle: "CLI Commands"
+description: "Full reference for every Mintlify CLI command — flags, options, and example output for mint dev, mint validate, mint broken-links, and mint update."
+---
+
+The Mintlify CLI exposes four commands that cover the full local development and pre-deployment quality-assurance workflow. Run any command with the `--help` flag to print its usage directly in your terminal.
+
+```bash
+mint --help
+```
+
+---
+
+## mint dev
+
+Start a local preview server that mirrors your production documentation site. The server watches your `docs.json` and all `.mdx` files and hot-reloads the browser whenever you save a change.
+
+Run this command from the root of your docs repository — the directory that contains `docs.json`:
+
+```bash
+mint dev
+```
+
+When the server is ready, open [http://localhost:3000](http://localhost:3000) in your browser.
+
+```
+✓ docs.json loaded
+✓ Navigation built (3 tabs, 12 groups, 48 pages)
+✓ Local server running at http://localhost:3000
+```
+
+### Options
+
+| Flag | Type | Default | Description |
+|---|---|---|---|
+| `--port <number>` | integer | `3000` | The local port the development server binds to. Use this if port 3000 is already occupied by another process. |
+
+**Example — custom port:**
+
+```bash
+mint dev --port 3333
+```
+
+<Note>
+  `mint dev` requires a valid `docs.json` in the current directory. If the file is missing or contains invalid JSON, the CLI prints an error and exits without starting the server.
+</Note>
+
+---
+
+## mint validate
+
+Validate your `docs.json` configuration and the frontmatter of every `.mdx` page. This command is fast — it performs static analysis without starting a server — and is well-suited for use in CI pipelines.
+
+```bash
+mint validate
+```
+
+`mint validate` checks for:
+
+- Valid JSON syntax in `docs.json`
+- All required top-level fields (`name`, `navigation`)
+- Page slugs listed in `navigation` that do not correspond to an existing `.mdx` file
+- Invalid frontmatter field types (e.g. a non-string `title`)
+
+If all checks pass, the command exits with code `0` and prints a summary:
+
+```
+✓ docs.json is valid
+✓ 48 pages validated — no errors found
+```
+
+If any check fails, the command exits with code `1` and prints each error with its location:
+
+```
+✗ Navigation references missing page: "guides/webhooks"
+✗ docs.json: "colors.primary" must be a hex color string — received "indigo"
+2 errors found. Fix the issues above and re-run mint validate.
+```
+
+### Options
+
+| Flag | Description |
+|---|---|
+| *(none)* | `mint validate` has no additional flags. |
+
+<Tip>
+  Add `mint validate` as a step in your pull-request CI workflow to block merges that would result in broken navigation or missing pages. Catching these errors before they reach your deployment branch saves time and prevents broken production deploys.
+</Tip>
+
+---
+
+## mint broken-links
+
+Scan every `.mdx` page in your docs for broken internal and external links. The command follows all `href` attributes and `[text](url)` Markdown links, then reports any that return a non-2xx HTTP status code or that resolve to a missing local page.
+
+```bash
+mint broken-links
+```
+
+The command prints a progress indicator as it checks each link, then outputs a report:
+
+```
+Checking 312 links across 48 pages...
+
+✗ /guides/authentication.mdx — internal link broken: "/concepts/oauth" (no matching page)
+✗ /api-reference/users.mdx — external link broken: "https://example.com/deprecated-page" (404)
+
+2 broken links found.
+```
+
+If no broken links are detected, the command exits with code `0`:
+
+```
+✓ All 312 links are valid.
+```
+
+### Options
+
+| Flag | Description |
+|---|---|
+| *(none)* | `mint broken-links` has no additional flags. |
+
+<Warning>
+  External link checks depend on the availability of third-party servers at the time you run the command. A link flagged as broken may be a temporary outage rather than a permanent error. Verify external links manually before removing or replacing them.
+</Warning>
+
+---
+
+## mint update
+
+Update the Mintlify CLI to the latest version published on npm. Run this command any time you want access to new features, performance improvements, or bug fixes.
+
+```bash
+mint update
+```
+
+The command fetches the latest package, replaces your current global installation, and prints the version it installed:
+
+```
+✓ Mintlify CLI updated to v4.2.1
+```
+
+Your docs files are never modified by `mint update`.
+
+### Options
+
+| Flag | Description |
+|---|---|
+| *(none)* | `mint update` has no additional flags. |
+
+<Tip>
+  Run `mint update` before starting a long documentation sprint. Keeping your local CLI version close to the production renderer version reduces the risk of seeing layout differences between your local preview and the deployed site.
+</Tip>

@@ -1,0 +1,132 @@
+---
+title: "Set Up a Custom Domain for Your Docs"
+sidebarTitle: "Custom Domain"
+description: "Point docs.yourcompany.com to Mintlify with one CNAME record targeting host.mintlify.com — SSL is provisioned automatically once your DNS resolves."
+---
+
+By default your Mintlify docs are available at `yourteam.mintlify.app`. Publishing them on your own domain — such as `docs.yourcompany.com` — gives your documentation the same trusted, on-brand URL as the rest of your product. Mintlify handles SSL certificate provisioning automatically, so you only need to add one DNS record and you're done.
+
+---
+
+## Prerequisites
+
+Before you start, confirm you have:
+
+- **Access to your DNS provider** (Cloudflare, Route 53, Namecheap, Google Domains, etc.)
+- **Admin access** to your Mintlify dashboard
+- A domain or subdomain you want to point at your docs (e.g. `docs.yourcompany.com`)
+
+<Warning>
+  DNS changes are public and take effect gradually across the internet. Make the change during a low-traffic window if your existing docs site is already live on that URL.
+</Warning>
+
+---
+
+## Setup steps
+
+<Steps>
+  <Step title="Open your dashboard settings">
+    Log in to the [Mintlify dashboard](https://dashboard.mintlify.com) and select your project. Navigate to **Settings** → **Custom Domain**.
+  </Step>
+  <Step title="Enter your custom domain">
+    Type your desired domain into the **Custom Domain** field and click **Save**. Use the full subdomain you want readers to visit — for example:
+
+    ```
+    docs.yourcompany.com
+    ```
+
+    Mintlify will display the CNAME target you need to add in the next step.
+  </Step>
+  <Step title="Add a CNAME record in your DNS provider">
+    Log in to your DNS provider and create a new **CNAME** record with the following values:
+
+    | Field | Value |
+    |---|---|
+    | **Type** | `CNAME` |
+    | **Name / Host** | `docs` (the subdomain part only — e.g. `docs` for `docs.yourcompany.com`) |
+    | **Target / Points to** | `host.mintlify.com` |
+    | **TTL** | `3600` (1 hour) or your provider's default |
+
+    <Note>
+      Some DNS providers ask for the full subdomain (`docs.yourcompany.com`) in the Name field, while others ask only for the subdomain label (`docs`). Refer to your provider's documentation if you're unsure.
+    </Note>
+  </Step>
+  <Step title="Wait for DNS propagation">
+    DNS changes propagate across the global DNS network over time. Most records become active within **a few minutes to a few hours**, but the process can take **up to 48 hours** in rare cases.
+
+    You can monitor propagation using a free tool such as [dnschecker.org](https://dnschecker.org) — enter your custom domain and verify the CNAME resolves to `host.mintlify.com` from multiple locations.
+  </Step>
+  <Step title="SSL certificate is provisioned automatically">
+    Once Mintlify detects that your CNAME is resolving correctly, it automatically provisions a **free TLS/SSL certificate** via Let's Encrypt. Your docs will be available over HTTPS with no additional configuration required.
+
+    The Mintlify dashboard will show a green **Active** status next to your custom domain when everything is set up correctly.
+  </Step>
+</Steps>
+
+---
+
+## CNAME record reference
+
+Use these exact values when creating your DNS record:
+
+| DNS field | Value |
+|---|---|
+| Record type | `CNAME` |
+| Host / Name | Your chosen subdomain (e.g. `docs`) |
+| Points to / Target | `host.mintlify.com` |
+| TTL | `3600` or your provider's default |
+
+<Info>
+  Mintlify only supports **subdomains** as custom domains (e.g. `docs.yourcompany.com`). Root/apex domains (e.g. `yourcompany.com`) cannot be pointed at Mintlify using a CNAME record — most DNS providers require an `A` or `ALIAS` record for apex domains, which is not currently supported.
+</Info>
+
+---
+
+## Provider-specific instructions
+
+<Accordion title="Cloudflare">
+  1. Open your domain in the Cloudflare dashboard and go to **DNS** → **Records**.
+  2. Click **Add record**.
+  3. Set **Type** to `CNAME`, **Name** to `docs`, and **Target** to `host.mintlify.com`.
+  4. **Disable the Cloudflare proxy** (set the toggle to DNS-only / grey cloud). Keeping the proxy enabled can interfere with Mintlify's SSL provisioning.
+  5. Click **Save**.
+</Accordion>
+
+<Accordion title="AWS Route 53">
+  1. Open the **Hosted zones** section of the Route 53 console and select your domain.
+  2. Click **Create record**.
+  3. Set **Record name** to `docs`, **Record type** to `CNAME`, and **Value** to `host.mintlify.com`.
+  4. Set **TTL** to `300` for faster initial propagation, then raise it later.
+  5. Click **Create records**.
+</Accordion>
+
+<Accordion title="Namecheap">
+  1. Go to your Namecheap account → **Domain List** → **Manage** for your domain.
+  2. Click the **Advanced DNS** tab.
+  3. Under **Host Records**, click **Add New Record**.
+  4. Set **Type** to `CNAME Record`, **Host** to `docs`, and **Value** to `host.mintlify.com`.
+  5. Click the green checkmark to save.
+</Accordion>
+
+<Accordion title="Google Domains / Squarespace DNS">
+  1. Open your domain settings and navigate to **DNS** → **Manage custom records**.
+  2. Click **Create new record**.
+  3. Set **Type** to `CNAME`, **Host name** to `docs`, and **Data** to `host.mintlify.com`.
+  4. Click **Save**.
+</Accordion>
+
+---
+
+## Troubleshooting
+
+<Accordion title="The dashboard shows 'Pending' after several hours">
+  Check that your CNAME record resolves to `host.mintlify.com` using a tool like [dnschecker.org](https://dnschecker.org). If it does not, verify that the record was saved correctly in your DNS provider. If you are using Cloudflare, confirm the proxy is set to **DNS-only** (grey cloud).
+</Accordion>
+
+<Accordion title="I see a certificate error when visiting my custom domain">
+  SSL provisioning begins only after Mintlify detects a valid CNAME. Wait for propagation to complete, then try again. If the error persists after 24 hours, contact [Mintlify support](mailto:support@mintlify.com) with your domain and project name.
+</Accordion>
+
+<Accordion title="I want to use a root domain (e.g. yourcompany.com)">
+  Root (apex) domains cannot use a CNAME record, so they are not currently supported as Mintlify custom domains. Use a subdomain such as `docs.yourcompany.com` instead. If you need your root domain to redirect to your docs, configure a redirect at the DNS or hosting layer of your main site.
+</Accordion>

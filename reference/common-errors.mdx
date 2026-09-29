@@ -1,0 +1,324 @@
+---
+title: "Common Errors and How to Fix Them"
+sidebarTitle: "Common Errors"
+description: "Diagnose and resolve the most frequent Mintlify errors — from 404 pages and broken links to deployment failures and logo display issues."
+---
+
+Even well-configured docs projects run into issues from time to time. This page covers the errors reported most often by Mintlify users, explains what causes them, and gives you clear steps to get back on track. If your error isn't listed here, check the [FAQ](/reference/faq) or contact [support@mintlify.com](mailto:support@mintlify.com).
+
+---
+
+## 404 on a Page
+
+**Symptom:** Visitors (or you) navigate to a page in your docs and see a 404 error, even though the MDX file exists in your repository.
+
+**Cause:** The slug listed in `docs.json` under `navigation` does not exactly match the file path of your MDX file (relative to the repo root, without the `.mdx` extension).
+
+**Example — mismatched entry:**
+
+```json
+// docs.json — WRONG
+{
+  "group": "Guides",
+  "pages": [
+    "guides/Getting-Started"   // ← capital letters and hyphen casing won't match
+  ]
+}
+```
+
+```
+guides/
+└── getting-started.mdx        // ← actual filename is lowercase
+```
+
+<Steps>
+  <Step title="Locate the 404 page slug">
+    Note the URL that returns 404, for example `/guides/Getting-Started`.
+  </Step>
+  <Step title="Find the matching entry in docs.json">
+    Open `docs.json` and search for `Getting-Started` inside the `navigation` object.
+  </Step>
+  <Step title="Check the actual filename">
+    Confirm the exact filename in your repository, including casing. Most operating systems treat filenames as case-sensitive.
+  </Step>
+  <Step title="Update the slug to match">
+    Change the `docs.json` entry so the slug matches the filename exactly:
+
+    ```json
+    // docs.json — CORRECT
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/getting-started"
+      ]
+    }
+    ```
+  </Step>
+  <Step title="Commit and redeploy">
+    Push the change to your connected branch. Mintlify redeploys automatically and the page will be accessible at the correct URL.
+  </Step>
+</Steps>
+
+<Tip>
+  Keep all filenames lowercase and use hyphens instead of spaces or underscores. This prevents casing mismatches across different operating systems and makes URLs easier to read.
+</Tip>
+
+---
+
+## `docs.json` Validation Error
+
+**Symptom:** Your deployment fails or the local dev server refuses to start, and the logs contain a message like:
+
+```
+Error: docs.json is invalid.
+  → "navigation" is required but missing.
+  → Unexpected field "colour" — did you mean "colors"?
+```
+
+**Cause:** Your `docs.json` file contains malformed JSON syntax (a missing comma, an extra bracket, a trailing comma) or uses a field name that Mintlify does not recognise.
+
+<Steps>
+  <Step title="Run the validator">
+    From the root of your docs repo, run:
+
+    ```bash
+    mint validate
+    ```
+
+    The CLI prints the exact line and field causing the error.
+  </Step>
+  <Step title="Fix the reported error">
+    Common mistakes include:
+
+    <CodeGroup>
+    ```json Trailing comma (invalid)
+    {
+      "name": "My Docs",
+      "theme": "luma",   // ← trailing comma before closing brace
+    }
+    ```
+
+    ```json Trailing comma (fixed)
+    {
+      "name": "My Docs",
+      "theme": "luma"
+    }
+    ```
+    </CodeGroup>
+  </Step>
+  <Step title="Validate again">
+    Re-run `mint validate` until no errors are reported. A clean run prints:
+
+    ```
+    ✓ docs.json is valid.
+    ```
+  </Step>
+  <Step title="Restart the dev server">
+    Stop any running dev server process and run `mint dev` again to confirm everything loads correctly.
+  </Step>
+</Steps>
+
+<Note>
+  Use a code editor with JSON schema support (VS Code works well) and add the Mintlify schema reference at the top of your `docs.json` to get inline validation and autocomplete:
+
+  ```json
+  {
+    "$schema": "https://mintlify.com/docs.json"
+  }
+  ```
+</Note>
+
+---
+
+## Local Dev Server Won't Start
+
+**Symptom:** Running `mint dev` prints an error and exits immediately, or hangs without opening `http://localhost:3000`. Common error messages include:
+
+```
+Error: listen EADDRINUSE: address already in use :::3000
+```
+
+```
+Error: This version of the Mintlify CLI is out of date. Run `mint update`.
+```
+
+**Cause:** Either port 3000 is already occupied by another process, or your local CLI is too old to run the current docs schema.
+
+<Steps>
+  <Step title="Update the CLI">
+    Always start here — an outdated CLI is the most frequent cause:
+
+    ```bash
+    mint update
+    ```
+  </Step>
+  <Step title="Check for a port conflict">
+    If the error message mentions `EADDRINUSE`, find what is using port 3000:
+
+    ```bash
+    # macOS / Linux
+    lsof -i :3000
+
+    # Windows (PowerShell)
+    netstat -ano | findstr :3000
+    ```
+  </Step>
+  <Step title="Free the port or use an alternative">
+    Stop the conflicting process, or start the Mintlify dev server on a different port:
+
+    ```bash
+    mint dev --port 3001
+    ```
+  </Step>
+  <Step title="Confirm you're in the right directory">
+    The CLI must be run from the directory that contains `docs.json`. If the file isn't found, the server won't start:
+
+    ```bash
+    ls docs.json   # should return the filename, not an error
+    mint dev
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+  Do not run `mint dev` inside a subdirectory of your repo. The CLI looks for `docs.json` in the current working directory and will not traverse up the file tree to find it.
+</Warning>
+
+---
+
+## Broken Links Warning
+
+**Symptom:** During a deployment or a local `mint dev` session, the CLI prints warnings such as:
+
+```
+Warning: Broken internal link detected.
+  Source : guides/getting-started.mdx
+  Target : /guides/installation  (page not found)
+```
+
+**Cause:** A link in one of your MDX files points to an internal page that either doesn't exist or whose slug has changed.
+
+<Steps>
+  <Step title="Run the broken-links checker">
+    Get a full list of all broken internal links in your project:
+
+    ```bash
+    mint broken-links
+    ```
+
+    The output lists the source file and the unresolvable target for each broken link.
+  </Step>
+  <Step title="Fix each broken link">
+    For each entry in the output, open the source file and update the link to point to a valid page slug:
+
+    ```mdx
+    {/* Before — page no longer exists */}
+    See the [Installation guide](/guides/installation).
+
+    {/* After — updated to the correct slug */}
+    See the [Installation guide](/guides/getting-started).
+    ```
+  </Step>
+  <Step title="Remove links to deleted pages">
+    If the target page was intentionally removed and there is no replacement, delete the link or replace it with plain text.
+  </Step>
+  <Step title="Re-run the checker">
+    Run `mint broken-links` again to confirm no broken references remain.
+  </Step>
+</Steps>
+
+<Tip>
+  Run `mint broken-links` as part of your pull request review process to catch broken links before they reach your published site.
+</Tip>
+
+---
+
+## Logo Not Appearing
+
+**Symptom:** Your docs site loads, but the navbar displays a blank space or a broken image where your logo should be.
+
+**Cause:** The `logo` path in `docs.json` is incorrect — the file either doesn't exist at that path or the path is written relative to the wrong directory.
+
+**Example — incorrect path:**
+
+```json
+// docs.json — WRONG
+{
+  "logo": {
+    "light": "assets/logo-light.svg",
+    "dark": "assets/logo-dark.svg"
+  }
+}
+```
+
+```
+my-docs-repo/
+├── docs.json
+└── public/
+    └── assets/
+        ├── logo-light.svg    // ← actual location is under public/
+        └── logo-dark.svg
+```
+
+<Steps>
+  <Step title="Locate your logo files">
+    Find the exact paths to your logo files relative to the **repository root** (the same directory that contains `docs.json`).
+  </Step>
+  <Step title="Update the logo paths in docs.json">
+    Write the paths relative to the repo root, starting without a leading slash:
+
+    ```json
+    // docs.json — CORRECT
+    {
+      "logo": {
+        "light": "public/assets/logo-light.svg",
+        "dark": "public/assets/logo-dark.svg"
+      }
+    }
+    ```
+  </Step>
+  <Step title="Confirm the file format">
+    Mintlify supports SVG, PNG, and WebP logos. SVG is recommended because it scales cleanly at any size. Make sure the file extension in `docs.json` matches the actual file extension on disk.
+  </Step>
+  <Step title="Check locally before deploying">
+    Run `mint dev` and verify the logo appears in the navbar at `http://localhost:3000` before pushing the change.
+  </Step>
+</Steps>
+
+<Note>
+  You can also use an absolute HTTPS URL for your logo (for example, a CDN-hosted image). If you do, make sure the URL is publicly accessible and does not require authentication.
+</Note>
+
+---
+
+## GitHub Deployment Not Triggering
+
+**Symptom:** You push a commit to your connected branch, but your Mintlify docs site does not update. The **Deployments** page in the dashboard shows no new deployment, or it shows a failed deployment with a permissions error such as:
+
+```
+Error: Mintlify GitHub App is not installed or lacks access to this repository.
+```
+
+**Cause:** The Mintlify GitHub App was not installed on the repository, was uninstalled, or does not have the required read permissions on the branch you're pushing to.
+
+<Steps>
+  <Step title="Check the deployment log">
+    Open **Dashboard → Deployments** and click the most recent deployment entry (or the failed one) to read the full error message.
+  </Step>
+  <Step title="Reinstall the Mintlify GitHub App">
+    Go to **Dashboard → Settings → GitHub** and click **Reinstall App**. This redirects you to GitHub, where you can confirm which repositories the app can access. Make sure the correct repository is selected.
+  </Step>
+  <Step title="Verify branch permissions">
+    In your GitHub repository settings, confirm that the branch you push to is not protected in a way that blocks the Mintlify App from reading it. The app requires at minimum **read** access to repository contents.
+  </Step>
+  <Step title="Confirm the connected branch">
+    Back in **Dashboard → Settings → General**, verify that the **Publishing Branch** matches the branch you are pushing commits to. If you recently renamed your default branch (for example, `master` → `main`), update this setting.
+  </Step>
+  <Step title="Trigger a manual redeploy">
+    Once permissions are restored, go to **Dashboard → Deployments** and click **Redeploy** on the latest deployment to confirm everything is wired up correctly.
+  </Step>
+</Steps>
+
+<Warning>
+  If you transfer your GitHub repository to a different organisation or rename it, the Mintlify GitHub App loses access automatically. Reinstall the app and reconnect the repository from the dashboard after any such transfer.
+</Warning>

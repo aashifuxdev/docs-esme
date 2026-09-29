@@ -1,0 +1,282 @@
+---
+title: "docs.json Configuration Reference"
+sidebarTitle: "docs.json"
+description: "Complete reference for every field in docs.json — the single configuration file that controls your Mintlify site's structure, appearance, and navigation."
+---
+
+Every Mintlify project is driven by a `docs.json` file at the root of your repository. This file controls everything from your site's name and color palette to the full navigation tree. The fields below map directly to what Mintlify reads at build time — keep the file valid JSON and changes deploy automatically on the next push.
+
+```json docs.json (complete example)
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Acme Docs",
+  "theme": "willow",
+  "colors": {
+    "primary": "#6366F1",
+    "light": "#818CF8",
+    "dark": "#4338CA"
+  },
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navbar": {
+    "links": [
+      { "label": "Blog", "href": "https://acme.com/blog" }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get Started",
+      "href": "https://app.acme.com/signup"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/acme",
+      "github": "https://github.com/acme",
+      "linkedin": "https://linkedin.com/company/acme"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["introduction", "quickstart"]
+          }
+        ]
+      }
+    ]
+  },
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude", "cursor"]
+  }
+}
+```
+
+---
+
+## Top-level fields
+
+<ParamField path="$schema" type="string">
+  The URL of the Mintlify JSON schema. Point this to `https://mintlify.com/docs.json` to enable inline validation and autocompletion in editors that support JSON Schema (VS Code, JetBrains IDEs, and others). This field is ignored at build time and exists purely for the developer experience.
+
+  ```json
+  { "$schema": "https://mintlify.com/docs.json" }
+  ```
+</ParamField>
+
+<ParamField path="name" type="string" required>
+  The display name of your documentation site. Mintlify renders this in the browser tab, the default Open Graph title, and — if you do not supply a logo — as plain text in the top-left corner of every page.
+
+  ```json
+  { "name": "Acme Docs" }
+  ```
+</ParamField>
+
+<ParamField path="theme" type="string">
+  The visual theme that controls typography, spacing, and border-radius defaults across the entire site. Choose one of the built-in options:
+
+  | Value | Character |
+  |---|---|
+  | `luma` | Clean and minimal |
+  | `willow` | Soft and rounded |
+  | `palm` | Modern and airy |
+  | `almond` | Warm neutrals |
+  | `aspen` | Bold and structured |
+  | `maple` | Rich and editorial |
+  | `sequoia` | Dense and technical |
+
+  ```json
+  { "theme": "willow" }
+  ```
+</ParamField>
+
+<ParamField path="colors" type="object">
+  The brand color palette used for interactive elements, highlights, and the active navigation indicator. All values must be valid hex color strings.
+
+  <Expandable title="colors properties">
+    <ParamField path="colors.primary" type="string">
+      The main brand color. Used for buttons, links, and the active sidebar item on screens that do not distinguish between light and dark modes.
+
+      ```json
+      { "colors": { "primary": "#6366F1" } }
+      ```
+    </ParamField>
+
+    <ParamField path="colors.light" type="string">
+      The variant of your brand color rendered in **light mode**. When provided, Mintlify uses this instead of `primary` on light-mode screens to ensure sufficient contrast.
+
+      ```json
+      { "colors": { "light": "#818CF8" } }
+      ```
+    </ParamField>
+
+    <ParamField path="colors.dark" type="string">
+      The variant of your brand color rendered in **dark mode**. When provided, Mintlify uses this instead of `primary` on dark-mode screens.
+
+      ```json
+      { "colors": { "dark": "#4338CA" } }
+      ```
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField path="favicon" type="string">
+  A URL or repository-relative path to the favicon file. Mintlify supports `.svg`, `.png`, `.ico`, and `.webp`. SVG is recommended because it scales cleanly at all sizes and supports dark/light variants natively.
+
+  ```json
+  { "favicon": "/favicon.svg" }
+  ```
+</ParamField>
+
+<ParamField path="logo" type="object">
+  The site logo displayed in the top-left navigation bar. Supply separate assets for light and dark mode so the logo remains legible regardless of the reader's color scheme preference.
+
+  <Expandable title="logo properties">
+    <ParamField path="logo.light" type="string">
+      Path or URL to the logo shown in **light mode**. Use a version of your logo designed for a white or light-colored background.
+
+      ```json
+      { "logo": { "light": "/logo/light.svg" } }
+      ```
+    </ParamField>
+
+    <ParamField path="logo.dark" type="string">
+      Path or URL to the logo shown in **dark mode**. Use a version of your logo designed for a dark background.
+
+      ```json
+      { "logo": { "dark": "/logo/dark.svg" } }
+      ```
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField path="navbar" type="object">
+  Configuration for the top navigation bar. Use this to add external links and a primary call-to-action button that appears on every page.
+
+  <Expandable title="navbar properties">
+    <ParamField path="navbar.links" type="array">
+      An array of link objects that render as text links in the navbar. Each object takes a `label` string and an `href` URL.
+
+      ```json
+      {
+        "navbar": {
+          "links": [
+            { "label": "Blog", "href": "https://acme.com/blog" },
+            { "label": "Status", "href": "https://status.acme.com" }
+          ]
+        }
+      }
+      ```
+    </ParamField>
+
+    <ParamField path="navbar.primary" type="object">
+      A single call-to-action button rendered with your primary brand color. Provide a `type` (use `"button"`), a `label` string, and an `href` URL.
+
+      ```json
+      {
+        "navbar": {
+          "primary": {
+            "type": "button",
+            "label": "Get Started",
+            "href": "https://app.acme.com/signup"
+          }
+        }
+      }
+      ```
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField path="footer" type="object">
+  Configuration for the page footer. Currently supports a `socials` map that renders branded icon links at the bottom of every page.
+
+  <Expandable title="footer properties">
+    <ParamField path="footer.socials" type="object">
+      A key-value map of social platform identifiers to profile URLs. Mintlify renders each entry as a recognizable brand icon. Supported keys are `x`, `github`, and `linkedin`.
+
+      ```json
+      {
+        "footer": {
+          "socials": {
+            "x": "https://x.com/acme",
+            "github": "https://github.com/acme",
+            "linkedin": "https://linkedin.com/company/acme"
+          }
+        }
+      }
+      ```
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField path="navigation" type="object" required>
+  The full navigation tree for your documentation site. Mintlify builds the sidebar entirely from this field. You must provide at least one tab with at least one group and one page.
+
+  <Expandable title="navigation properties">
+    <ParamField path="navigation.tabs" type="array">
+      An array of top-level tab objects. Each tab appears as a switchable section in the main navigation bar and contains its own independent set of groups and pages.
+
+      ```json
+      {
+        "navigation": {
+          "tabs": [
+            { "tab": "Guides", "groups": [ ... ] },
+            { "tab": "API Reference", "groups": [ ... ] }
+          ]
+        }
+      }
+      ```
+    </ParamField>
+
+    <ParamField path="navigation.tabs[].groups" type="array">
+      An array of group objects nested inside a tab. Each group renders as a collapsible heading in the sidebar and contains an ordered list of page slugs.
+
+      ```json
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["introduction", "quickstart", "authentication"]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": ["concepts/routing", "concepts/theming"]
+          }
+        ]
+      }
+      ```
+    </ParamField>
+
+    <ParamField path="navigation.tabs[].groups[].pages" type="array">
+      An ordered array of page slugs (file paths relative to the repository root, without the `.mdx` extension) that belong to this group. Mintlify renders them in the order listed.
+
+      ```json
+      { "pages": ["introduction", "quickstart", "guides/authentication"] }
+      ```
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField path="contextual" type="object">
+  Configuration for the AI-powered contextual toolbar that appears on each page. This toolbar lets readers send the current page's content to an AI assistant or copy it as plain text.
+
+  <Expandable title="contextual properties">
+    <ParamField path="contextual.options" type="array">
+      An ordered array of option identifiers that control which buttons appear in the contextual toolbar. Supported values are `"copy"`, `"view"`, `"chatgpt"`, `"claude"`, `"perplexity"`, `"mcp"`, `"cursor"`, and `"vscode"`.
+
+      ```json
+      {
+        "contextual": {
+          "options": ["copy", "view", "chatgpt", "claude", "cursor"]
+        }
+      }
+      ```
+    </ParamField>
+  </Expandable>
+</ParamField>

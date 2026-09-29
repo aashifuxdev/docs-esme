@@ -1,0 +1,220 @@
+---
+title: "AI Writing Tools: Skill Install and MCP Integration"
+sidebarTitle: "AI Writing"
+description: "Speed up documentation authoring with AI tools. Install the Mintlify skill, connect the MCP server, and write better docs faster in any AI-powered editor."
+---
+
+Writing high-quality documentation takes time, but AI-powered editors and coding assistants can dramatically accelerate the process. Mintlify integrates with the tools you already use — Claude Code, Cursor, Windsurf, VS Code, ChatGPT, and more — so AI suggestions are grounded in Mintlify's component library, writing standards, and your existing docs structure.
+
+## How Mintlify AI Integration Works
+
+When you connect an AI tool to Mintlify, it gains access to the full component reference, frontmatter schema, style guidelines, and workflow patterns that make up a well-structured Mintlify docs site. Instead of generating generic Markdown, the AI produces correctly structured MDX that uses `<Steps>`, `<CardGroup>`, `<CodeGroup>`, and other components the way Mintlify expects them.
+
+There are two main integration paths:
+
+<CardGroup cols={2}>
+  <Card title="Mintlify Skill" icon="graduation-cap">
+    A portable skills package you install once per project via `npx`. Works with any tool that supports the skills protocol.
+  </Card>
+  <Card title="MCP Server" icon="server">
+    A Model Context Protocol server that exposes Mintlify's docs as live context to any MCP-compatible AI client.
+  </Card>
+</CardGroup>
+
+## Installing the Mintlify Skill
+
+The Mintlify skill bundles the component reference, writing standards, and workflow guidance into a single portable package. Run the following command in the root of your docs repository:
+
+```bash
+npx skills add https://mintlify.com/docs
+```
+
+This command fetches the latest skill definition from Mintlify's docs site and saves it locally so your AI assistant can read it. You only need to run it once per project; re-run it whenever you want to pull the latest component updates.
+
+<Note>
+  The `skills add` command requires Node.js 18 or later and an active internet connection to fetch the skill definition. The resulting file is safe to commit to your repository so the whole team shares the same context.
+</Note>
+
+### What the Skill Provides
+
+Once installed, AI tools that read your project's skills file gain access to:
+
+<AccordionGroup>
+  <Accordion title="Component reference" icon="puzzle-piece">
+    The full catalogue of Mintlify MDX components with prop definitions, usage patterns, and realistic examples for `<Card>`, `<CardGroup>`, `<Steps>`, `<Step>`, `<Tabs>`, `<Tab>`, `<Accordion>`, `<CodeGroup>`, `<Note>`, `<Tip>`, `<Warning>`, `<Info>`, `<ParamField>`, and more.
+  </Accordion>
+  <Accordion title="Writing standards" icon="pen-nib">
+    Mintlify's recommended style guidelines: second-person voice, imperative mood, opening prose paragraphs before components, frontmatter field requirements, and descriptive heading conventions.
+  </Accordion>
+  <Accordion title="Workflow guidance" icon="map">
+    Patterns for common documentation tasks: structuring a quickstart, writing an API reference page, creating a multi-step tutorial, and organizing navigation in `docs.json`.
+  </Accordion>
+</AccordionGroup>
+
+## Connecting the MCP Server
+
+The Mintlify MCP (Model Context Protocol) server exposes your docs as live, queryable context to any MCP-compatible AI client. Configure your tool to connect to:
+
+```
+https://mcp.mintlify.com
+```
+
+The MCP server is especially useful when you want AI suggestions to reflect the actual content of your published docs — for example, when updating an existing page and asking the AI to match the tone and structure of adjacent pages.
+
+## Setting Up Specific AI Tools
+
+Follow the steps below for the AI tool you use most.
+
+<Tabs>
+  <Tab title="Claude Code">
+    <Steps>
+      <Step title="Install the Mintlify skill">
+        Run the skill installer in your docs root:
+
+        ```bash
+        npx skills add https://mintlify.com/docs
+        ```
+      </Step>
+      <Step title="Open your docs in Claude Code">
+        Launch Claude Code from your terminal:
+
+        ```bash
+        claude
+        ```
+
+        Claude Code automatically reads skills files present in the project, so no additional configuration is needed.
+      </Step>
+      <Step title="Start writing">
+        Ask Claude to draft or improve pages using natural language. For example:
+
+        > "Write a quickstart page for our REST API using Mintlify components. Follow the Mintlify style guide."
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Cursor">
+    <Steps>
+      <Step title="Install the Mintlify skill">
+        ```bash
+        npx skills add https://mintlify.com/docs
+        ```
+      </Step>
+      <Step title="Add the MCP server to Cursor">
+        Open **Cursor Settings → MCP** and add a new server entry:
+
+        ```json
+        {
+          "mcpServers": {
+            "mintlify": {
+              "url": "https://mcp.mintlify.com"
+            }
+          }
+        }
+        ```
+      </Step>
+      <Step title="Use Cursor Chat or Composer">
+        Open any `.mdx` file and use **Cmd+L** (Chat) or **Cmd+I** (Composer) to ask for component suggestions, page structure improvements, or full page drafts grounded in Mintlify's standards.
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Windsurf">
+    <Steps>
+      <Step title="Install the Mintlify skill">
+        ```bash
+        npx skills add https://mintlify.com/docs
+        ```
+      </Step>
+      <Step title="Add the MCP server in Windsurf settings">
+        Navigate to **Windsurf Settings → Cascade → MCP Servers** and add:
+
+        ```json
+        {
+          "mintlify": {
+            "serverUrl": "https://mcp.mintlify.com"
+          }
+        }
+        ```
+      </Step>
+      <Step title="Write with Cascade">
+        Open the Cascade panel, reference your `.mdx` file, and prompt Cascade to help draft or refine documentation content.
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="VS Code">
+    <Steps>
+      <Step title="Install the Mintlify skill">
+        ```bash
+        npx skills add https://mintlify.com/docs
+        ```
+      </Step>
+      <Step title="Add the MCP server to VS Code">
+        Open your VS Code `settings.json` and add the Mintlify MCP server under your AI extension's MCP configuration. For **GitHub Copilot Chat**:
+
+        ```json
+        {
+          "github.copilot.chat.mcp.servers": {
+            "mintlify": {
+              "url": "https://mcp.mintlify.com"
+            }
+          }
+        }
+        ```
+      </Step>
+      <Step title="Use inline chat or the chat panel">
+        Highlight a section of an `.mdx` file, press **Cmd+I** for inline chat, and ask Copilot to rewrite it using Mintlify components or to add a `<Steps>` block for your numbered instructions.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Contextual AI Options in Published Docs
+
+Every page in your published Mintlify docs exposes a set of contextual AI shortcuts that readers can use to explore your content more deeply. These options appear in the page toolbar and include:
+
+| Option | What it does |
+|---|---|
+| `copy` | Copies the full page content to the clipboard in Markdown format |
+| `view` | Opens a plain-text view of the page source |
+| `chatgpt` | Opens the page content as a conversation starter in ChatGPT |
+| `claude` | Opens the page content directly in Claude |
+| `perplexity` | Sends the page to Perplexity for follow-up research |
+| `mcp` | Exposes the page via the MCP server for use in MCP-compatible clients |
+| `cursor` | Opens the page as context in a Cursor chat session |
+| `vscode` | Opens the page as context in a VS Code Copilot Chat session |
+
+<Info>
+  The contextual AI options available on your published site depend on your Mintlify plan. Check **Settings → Features** in the dashboard to see which options are enabled for your workspace.
+</Info>
+
+## Tips for Effective AI-Assisted Writing
+
+<Tip>
+  **Be specific in your prompts.** Instead of "write a page about webhooks," try "write a Mintlify page about configuring webhooks for order events, using a `<Steps>` component for the setup flow and a `<CodeGroup>` with Python and Node.js examples." Specific prompts produce much better first drafts.
+</Tip>
+
+<Tip>
+  **Review every AI draft.** AI tools occasionally invent component props, misformat frontmatter, or use incorrect language tags. Run `mint dev` locally and scan the preview before committing AI-generated pages.
+</Tip>
+
+<Tip>
+  **Keep the skill up to date.** Mintlify ships new components regularly. Re-run `npx skills add https://mintlify.com/docs` every few weeks to make sure your AI assistant knows about the latest additions.
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Components" icon="puzzle-piece" href="/writing/components">
+    Browse every Mintlify component the AI can help you use.
+  </Card>
+  <Card title="Pages" icon="file" href="/writing/pages">
+    Review the page structure and frontmatter standards the AI follows.
+  </Card>
+  <Card title="Code Blocks" icon="code" href="/writing/code-blocks">
+    See how to instruct AI tools to generate correctly annotated code blocks.
+  </Card>
+  <Card title="Navigation" icon="map" href="/configuration/navigation">
+    Learn how to register your new AI-generated pages in the sidebar.
+  </Card>
+</CardGroup>

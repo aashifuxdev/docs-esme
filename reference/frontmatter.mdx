@@ -1,0 +1,118 @@
+---
+title: "MDX Page Frontmatter Reference"
+sidebarTitle: "Frontmatter"
+description: "Reference for every MDX frontmatter field in Mintlify — title, sidebarTitle, description, icon, url, and mode — with accepted values and examples."
+---
+
+Every `.mdx` file in your Mintlify project can open with a YAML frontmatter block delimited by `---` fences. Mintlify reads these fields to set the page title, build the sidebar, generate SEO tags, and choose how the page is rendered. Fields you omit fall back to sensible defaults, but providing them explicitly gives you full control over how each page appears.
+
+```mdx Complete frontmatter example
+---
+title: "Authentication Guide"
+sidebarTitle: "Authentication"
+description: "Learn how to authenticate API requests with Bearer tokens, API keys, and OAuth 2.0 — with copy-ready code samples for every major language."
+icon: "lock"
+url: "guides/authentication"
+mode: "wide"
+---
+
+Your page content starts here.
+```
+
+---
+
+## Frontmatter fields
+
+<ParamField path="title" type="string" required>
+  The canonical title of the page. Mintlify renders it as the `<h1>` at the top of the page content, in the browser tab (`<title>`), and in automatically generated Open Graph tags. Keep titles descriptive but concise — aim for 50–60 characters so they display without truncation in search results and browser tabs.
+
+  ```mdx
+  ---
+  title: "Getting Started with the Acme API"
+  ---
+  ```
+
+  <Note>
+    If you omit `title`, Mintlify falls back to the filename (without the `.mdx` extension), capitalised and with hyphens replaced by spaces. Always set an explicit `title` for production pages.
+  </Note>
+</ParamField>
+
+<ParamField path="sidebarTitle" type="string">
+  A short label shown in the left sidebar navigation in place of the full `title`. Use `sidebarTitle` when your page title is long or descriptive and you want a more compact sidebar entry. Sidebar entries that are too long get truncated, so aim for 1–3 words or at most 25 characters.
+
+  ```mdx
+  ---
+  title: "Getting Started with the Acme API"
+  sidebarTitle: "Quickstart"
+  ---
+  ```
+
+  <Tip>
+    A good pattern is to write a descriptive `title` for SEO and first-impression context, then set a terse `sidebarTitle` so the sidebar stays scannable.
+  </Tip>
+</ParamField>
+
+<ParamField path="description" type="string">
+  A one- or two-sentence summary of the page rendered as the HTML `<meta name="description">` tag. Search engines display this beneath the page title in results, so make it accurate and compelling. Aim for 130–155 characters — long enough to be informative, short enough to avoid truncation.
+
+  ```mdx
+  ---
+  description: "Learn how to authenticate API requests with Bearer tokens, API keys, and OAuth 2.0 — with copy-ready code samples for every major language."
+  ---
+  ```
+
+  <Note>
+    The `description` value also populates the Open Graph `og:description` tag used by social-media link previews. Writing a good description benefits both SEO and shareability.
+  </Note>
+</ParamField>
+
+<ParamField path="icon" type="string">
+  The name of a [Font Awesome](https://fontawesome.com/icons) icon (solid style, free tier) to display next to the page title in the sidebar. Icons help readers scan a long navigation tree at a glance. Pass the icon name without the `fa-` prefix.
+
+  ```mdx
+  ---
+  title: "Authentication"
+  icon: "lock"
+  ---
+  ```
+
+  Common values: `"bolt"`, `"book"`, `"code"`, `"cube"`, `"gear"`, `"key"`, `"lock"`, `"rocket"`, `"shield"`, `"terminal"`, `"webhook"`.
+
+  <Tip>
+    Keep icons consistent within a group — using them on every page in a group or on none of them is less visually noisy than mixing.
+  </Tip>
+</ParamField>
+
+<ParamField path="url" type="string">
+  A custom URL slug that overrides the default path derived from the file's location in the repository. Write the slug as a relative path without a leading slash and without the `.mdx` extension.
+
+  ```mdx
+  ---
+  title: "API Authentication"
+  url: "guides/authentication"
+  ---
+  ```
+
+  This is useful when you want a clean public URL that differs from the file path, or when you need to preserve an existing URL after reorganising files.
+
+  <Warning>
+    Changing this value on a published page alters the live URL, which breaks any existing bookmarks and inbound links. Set a custom `url` early, before the page is indexed.
+  </Warning>
+</ParamField>
+
+<ParamField path="mode" type="string">
+  Controls the layout and presentation mode used to render the page. The available modes are:
+
+  | Value | Description |
+  |---|---|
+  | `default` | Standard content width with a right-hand table of contents. Used for most documentation pages. |
+  | `wide` | Expands the content area to full width. Good for pages with large tables, diagrams, or reference grids. |
+  | `custom` | Removes all layout chrome (sidebar, navbar, ToC) and renders the page as a blank canvas. Useful for marketing-style landing pages embedded in your docs. |
+
+  ```mdx
+  ---
+  title: "API Reference Overview"
+  mode: "wide"
+  ---
+  ```
+</ParamField>

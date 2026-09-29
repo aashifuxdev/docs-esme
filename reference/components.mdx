@@ -1,0 +1,170 @@
+---
+title: "Built-in Components Quick Reference"
+sidebarTitle: "Components"
+description: "A quick reference for every built-in Mintlify MDX component — with a one-line description and a minimal, copy-ready usage example for each."
+---
+
+Mintlify ships a library of MDX components you can drop into any page without imports. Each component is designed to solve a specific documentation need — from callout boxes and tabbed code samples to structured API parameter tables. The accordion list below covers every built-in component, what it does, and the minimal markup needed to use it.
+
+<Accordion title="Card">
+  Renders a bordered, clickable card with an optional icon and description. Use `Card` on its own or nest it inside `CardGroup` to build a grid of links.
+
+  **Props:** `title` (required), `icon`, `href`, `description`
+
+  ```mdx
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get your first API call working in under five minutes.
+  </Card>
+  ```
+</Accordion>
+
+<Accordion title="CardGroup">
+  Wraps multiple `Card` components in a responsive grid. Pass `cols` (default `2`) to control the column count.
+
+  **Props:** `cols`
+
+  ```mdx
+  <CardGroup cols={2}>
+    <Card title="Quickstart" icon="rocket" href="/quickstart">
+      Up and running in minutes.
+    </Card>
+    <Card title="Components" icon="code" href="/reference/components">
+      Explore every built-in component.
+    </Card>
+  </CardGroup>
+  ```
+</Accordion>
+
+<Accordion title="Steps / Step">
+  Renders a numbered step-by-step guide. Wrap each step in a `<Step>` with a `title` prop. Mintlify numbers steps automatically and renders the title as a sub-heading.
+
+  **Props (Step):** `title` (required)
+
+  ```mdx
+  <Steps>
+    <Step title="Install the CLI">
+      Run `npm install -g mint` to install the Mintlify CLI globally.
+    </Step>
+    <Step title="Start the preview">
+      Run `mint dev` from your docs root. The preview opens at `http://localhost:3000`.
+    </Step>
+    <Step title="Push your changes">
+      Commit and push — Mintlify deploys automatically on every push to your linked branch.
+    </Step>
+  </Steps>
+  ```
+</Accordion>
+
+<Accordion title="Tabs / Tab">
+  Renders a tabbed content switcher. Each `<Tab>` takes a `title` prop used as the tab label. Use tabs to show equivalent content for multiple languages, frameworks, or environments without duplicating the surrounding prose.
+
+  **Props (Tab):** `title` (required)
+
+  Use `<Tabs>` with nested `<Tab title="...">` elements. Each tab can contain any Markdown or MDX content, including code blocks, prose, and other components.
+</Accordion>
+
+<Accordion title="Accordion">
+  Renders a collapsible disclosure panel with a clickable title. Use `Accordion` to progressively disclose supplementary information — FAQs, advanced options, and edge-case details — without interrupting the main reading flow.
+
+  **Props:** `title` (required), `defaultOpen`
+
+  ```mdx
+  <Accordion title="What regions is the API available in?">
+    The API is available in `us-east-1`, `eu-west-1`, and `ap-southeast-1`.
+    Region-specific base URLs are listed in the [CLI Commands](/reference/cli-commands) page.
+  </Accordion>
+  ```
+</Accordion>
+
+<Accordion title="Note">
+  A blue informational callout for neutral, supplementary context that the reader should be aware of but that is not urgent.
+
+  ```mdx
+  <Note>
+    Rate limits reset at the start of each calendar month in UTC. Unused requests do not roll over.
+  </Note>
+  ```
+</Accordion>
+
+<Accordion title="Tip">
+  A green callout for helpful suggestions, shortcuts, or best practices that improve the reader's experience.
+
+  ```mdx
+  <Tip>
+    Store your API key in an environment variable (`ACME_API_KEY`) instead of hard-coding it in your source files.
+  </Tip>
+  ```
+</Accordion>
+
+<Accordion title="Warning">
+  An amber callout for actions that can cause data loss, unexpected charges, or other non-reversible consequences. Reserve warnings for genuine hazards — overusing them dilutes their impact.
+
+  ```mdx
+  <Warning>
+    Deleting a workspace is permanent. All projects, members, and billing data within the workspace will be removed and cannot be recovered.
+  </Warning>
+  ```
+</Accordion>
+
+<Accordion title="Info">
+  A neutral callout for administrative or contextual notes that do not fit the colour-coded severity levels of `Note`, `Tip`, or `Warning`.
+
+  ```mdx
+  <Info>
+    This feature is currently available on the Pro and Enterprise plans. See [Configuration](/configuration/settings) for a full feature comparison.
+  </Info>
+  ```
+</Accordion>
+
+<Accordion title="CodeGroup">
+  Renders multiple code blocks under a single tabbed interface. Use `CodeGroup` when you want to show the same snippet in multiple languages side by side. Give each fenced code block a filename — the filename becomes the tab label.
+
+  Wrap multiple fenced code blocks (each with a filename) inside `<CodeGroup>...</CodeGroup>`. The filename of each block becomes the tab label in the rendered output.
+</Accordion>
+
+<Accordion title="ParamField">
+  Documents a request parameter — path, query, body, or header — in a structured, scannable format. Use `ParamField` in API reference pages to replace hand-rolled tables.
+
+  **Props:** `path` (parameter name, required), `type`, `required`, `default`, `placeholder`
+
+  ```mdx
+  <ParamField path="user_id" type="string" required>
+    The unique identifier of the user. Retrieve this from the `id` field returned by `GET /users`.
+  </ParamField>
+  ```
+</Accordion>
+
+<Accordion title="ResponseField">
+  Documents a field in an API response body using the same structured layout as `ParamField`. Nest `ResponseField` components inside an `<Expandable>` to represent deeply nested JSON objects without overwhelming the reader.
+
+  **Props:** `name` (field name, required), `type`, `required`
+
+  ```mdx
+  <ResponseField name="user" type="object">
+    The authenticated user associated with this session.
+
+    <Expandable title="user properties">
+      <ResponseField name="user.id" type="string">
+        Unique identifier for the user.
+      </ResponseField>
+      <ResponseField name="user.email" type="string">
+        The user's primary email address.
+      </ResponseField>
+    </Expandable>
+  </ResponseField>
+  ```
+</Accordion>
+
+<Accordion title="Expandable">
+  A utility wrapper that hides its children behind a "Show / Hide" toggle. Pair `Expandable` with `ResponseField` or `ParamField` to collapse deeply nested object schemas and keep long API reference pages scannable.
+
+  **Props:** `title` (toggle label, required), `defaultOpen`
+
+  ```mdx
+  <Expandable title="address properties">
+    <ResponseField name="street" type="string">Street line 1.</ResponseField>
+    <ResponseField name="city" type="string">City name.</ResponseField>
+    <ResponseField name="zip" type="string">Postal / ZIP code.</ResponseField>
+  </Expandable>
+  ```
+</Accordion>

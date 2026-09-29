@@ -1,0 +1,109 @@
+{
+  "projectType": "saas",
+  "projectName": "Mintlify",
+  "projectDescription": "Mintlify is a documentation platform that lets teams build, publish, and maintain beautiful developer docs from MDX files with AI-assisted writing and a fully customizable site.",
+  "theme": "luma",
+  "primaryColor": "#1be49c",
+  "lightColor": "#0c8c5c",
+  "darkColor": "#0c0c0c",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "how-it-works"
+            ]
+          },
+          {
+            "group": "Writing Content",
+            "pages": [
+              "writing/pages",
+              "writing/components",
+              "writing/code-blocks",
+              "writing/ai-writing"
+            ]
+          },
+          {
+            "group": "Site Configuration",
+            "pages": [
+              "configuration/settings",
+              "configuration/navigation",
+              "configuration/branding",
+              "configuration/custom-domain"
+            ]
+          },
+          {
+            "group": "Publishing",
+            "pages": [
+              "publishing/github",
+              "publishing/deployments",
+              "publishing/versioning"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/ai-tools",
+              "integrations/analytics",
+              "integrations/search"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "Configuration Reference",
+            "pages": [
+              "reference/docs-json",
+              "reference/frontmatter",
+              "reference/components"
+            ]
+          },
+          {
+            "group": "CLI",
+            "pages": [
+              "reference/cli-overview",
+              "reference/cli-commands"
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "pages": [
+              "reference/faq",
+              "reference/common-errors"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "MDX-based documentation pages with rich component support",
+    "Git-driven publishing via GitHub App integration",
+    "AI-assisted writing with support for Claude, ChatGPT, Cursor, and more",
+    "Customizable branding, navigation, and site settings via docs.json",
+    "Built-in search powered by contextual AI",
+    "Custom domain support",
+    "Versioning for multi-version documentation",
+    "Analytics and third-party integrations",
+    "Local preview via Mintlify CLI"
+  ],
+  "publicApiSurface": [
+    "docs.json — site configuration file",
+    "mint dev — local preview CLI command",
+    "mint validate — configuration validation CLI command",
+    "mint broken-links — broken link checker CLI command",
+    "npx skills add — AI coding tool skill installer",
+    "MDX frontmatter fields: title, description, url, sidebarTitle, icon",
+    "Navigation schema: tabs, groups, pages, anchors",
+    "Components: Card, Tip, Steps, Step, CodeBlock, Callout",
+    "GitHub App for auto-deploy on push"
+  ]
+}

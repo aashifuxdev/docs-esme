@@ -1,0 +1,158 @@
+---
+title: "Creating and Structuring Pages in Your Mintlify Docs"
+sidebarTitle: "Pages"
+description: "Learn how to create MDX pages, configure frontmatter, organize content with headings, and link between pages in your Mintlify docs."
+---
+
+Every page in your Mintlify documentation is an MDX file — a Markdown file that supports JSX components alongside regular prose. You write content in familiar Markdown syntax, enrich it with Mintlify's built-in components, and Mintlify handles the rest: routing, rendering, search indexing, and navigation.
+
+## Creating a Page
+
+To create a new page, add an `.mdx` file anywhere inside your docs repository. The file path maps directly to the URL slug — so `guides/quickstart.mdx` becomes `/guides/quickstart` in your published docs.
+
+Every page must start with a YAML frontmatter block at the very top of the file. Here is the minimal structure:
+
+```mdx
+---
+title: "My First Page"
+description: "A quick overview of my feature."
+---
+
+Welcome to this page. Here you can learn about...
+```
+
+That's all you need to publish a valid page. Mintlify reads the frontmatter, registers the route, and renders the content below the `---` separator.
+
+## Frontmatter Fields
+
+Frontmatter is the YAML block between the two `---` delimiters at the top of every `.mdx` file. It controls the page's metadata, appearance, and navigation label.
+
+<AccordionGroup>
+  <Accordion title="title" icon="heading">
+    **Required.** The primary heading shown in the browser tab, search results, and at the top of the page. Keep it under 60 characters so it renders cleanly in search snippets.
+
+    ```yaml
+    title: "Authentication Overview"
+    ```
+  </Accordion>
+
+  <Accordion title="description" icon="align-left">
+    **Recommended.** A one-sentence summary shown in search results and link previews. Aim for 130–155 characters — enough to be descriptive without being truncated.
+
+    ```yaml
+    description: "Learn how to authenticate API requests using API keys, OAuth 2.0, or JWT tokens."
+    ```
+  </Accordion>
+
+  <Accordion title="sidebarTitle" icon="sidebar">
+    **Optional.** A shorter label used in the sidebar navigation when the full `title` would be too long. Keep it to 1–3 words in Title Case.
+
+    ```yaml
+    sidebarTitle: "Auth Overview"
+    ```
+  </Accordion>
+
+  <Accordion title="icon" icon="icons">
+    **Optional.** A [Font Awesome](https://fontawesome.com/icons) icon name displayed next to the page title in the sidebar. Use the kebab-case icon name without the `fa-` prefix.
+
+    ```yaml
+    icon: "key"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## A Complete Frontmatter Example
+
+The following example shows all four frontmatter fields used together on a realistic page:
+
+```mdx
+---
+title: "API Authentication Methods"
+sidebarTitle: "Authentication"
+description: "Secure your API requests with API keys, OAuth 2.0, or JWT bearer tokens. Includes setup steps and code samples for each method."
+icon: "lock"
+---
+```
+
+## Page Structure
+
+A well-structured page guides readers from context to detail. Follow this general pattern:
+
+<Steps>
+  <Step title="Open with a prose paragraph">
+    Write one or two sentences that explain what this page covers and why it matters. This paragraph appears before any component, callout, or code block, giving readers immediate context.
+  </Step>
+  <Step title="Use headings to create sections">
+    Use `##` for top-level sections and `###` for subsections. Mintlify automatically builds a right-hand table of contents from your `##` and `###` headings, so keep them descriptive and specific.
+  </Step>
+  <Step title="Mix prose and components">
+    Alternate between explanatory prose and Mintlify components like `<Steps>`, `<CodeGroup>`, or `<Tabs>`. Avoid dropping a component without any surrounding explanation.
+  </Step>
+  <Step title="End with a next step or related links">
+    Close each page with a brief summary or a `<CardGroup>` pointing readers to related topics. This reduces dead ends in your documentation.
+  </Step>
+</Steps>
+
+## How File Paths Map to URLs
+
+Mintlify derives each page's URL directly from its file path relative to your docs root. There is no separate routing configuration to maintain.
+
+| File path | Published URL |
+|---|---|
+| `index.mdx` | `/` |
+| `quickstart.mdx` | `/quickstart` |
+| `guides/authentication.mdx` | `/guides/authentication` |
+| `api-reference/endpoints/users.mdx` | `/api-reference/endpoints/users` |
+
+<Note>
+  File and folder names become URL segments exactly as written. Use lowercase kebab-case names (e.g., `getting-started.mdx`) to produce clean, readable URLs.
+</Note>
+
+## Linking Between Pages
+
+Use standard Markdown link syntax to link between pages. Reference pages by their file path relative to your docs root, omitting the `.mdx` extension:
+
+```mdx
+See the [Authentication guide](/guides/authentication) for setup instructions.
+```
+
+For links to external sites, use the full URL including `https://`:
+
+```mdx
+Read the [OpenAPI specification](https://swagger.io/specification/) for background.
+```
+
+<Tip>
+  Mintlify validates internal links at build time. If you rename or move a file, update any links pointing to the old path to prevent broken links in your published docs.
+</Tip>
+
+## Using Images
+
+Place image files in a folder within your docs repository (e.g., `/images/`) and reference them using standard Markdown image syntax:
+
+```mdx
+![Alt text describing the image](/images/dashboard-overview.png)
+```
+
+Always write descriptive alt text. It improves accessibility and appears if the image fails to load.
+
+<Warning>
+  Avoid embedding large, uncompressed images. Mintlify serves images as-is, so compress screenshots and diagrams before committing them to your repository to keep page load times fast.
+</Warning>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Components" icon="puzzle-piece" href="/writing/components">
+    Enrich your pages with Cards, Steps, Tabs, Accordions, and more.
+  </Card>
+  <Card title="Code Blocks" icon="code" href="/writing/code-blocks">
+    Add syntax-highlighted code with titles, line numbers, and diffs.
+  </Card>
+  <Card title="AI Writing" icon="wand-magic-sparkles" href="/writing/ai-writing">
+    Speed up authoring with AI tools and the Mintlify skill.
+  </Card>
+  <Card title="Navigation" icon="map" href="/configuration/navigation">
+    Control how pages appear in the sidebar and top navigation.
+  </Card>
+</CardGroup>

@@ -1,0 +1,206 @@
+---
+title: "Version Your Mintlify Documentation for Multiple Releases"
+sidebarTitle: "Versioning"
+description: "Maintain separate documentation versions for different API releases, letting users switch between versions from a dropdown in your navigation."
+---
+
+When your product ships breaking changes or a major new API version, you need to keep older documentation available so users on previous versions aren't left stranded. Mintlify's versioning support lets you maintain multiple sets of documentation side by side, with a dropdown in your navigation that lets readers switch between versions at any time.
+
+## When to Use Versioning
+
+Not every documentation update needs a new version. Versioning adds maintenance overhead — every page you keep in an old version is a page you may need to update independently. Use it when:
+
+<CardGroup cols={2}>
+  <Card title="Breaking API changes" icon="triangle-exclamation">
+    An endpoint's request or response shape has changed in a way that is not backward-compatible and users may still be running the old version.
+  </Card>
+  <Card title="Major product releases" icon="rocket">
+    A v2 or v3 release with a fundamentally different developer experience — new SDKs, new auth model, new core concepts.
+  </Card>
+  <Card title="Long-term support branches" icon="code-branch">
+    You offer an LTS release that will be maintained in parallel with the latest version for an extended period.
+  </Card>
+  <Card title="Legacy migration guides" icon="arrow-right-arrow-left">
+    You want to keep v1 docs available while actively guiding users to migrate to v2, without removing the old reference material.
+  </Card>
+</CardGroup>
+
+<Tip>
+  If the change is additive (new endpoints, new optional parameters, new pages), you do not need a new version — just update your existing docs and use a `<Note>` or `<Info>` callout to indicate when a feature was added.
+</Tip>
+
+## How Versioning Works in Mintlify
+
+Mintlify implements versioning through **navigation dropdowns** defined in `docs.json`. Each dropdown entry points to a separate set of navigation groups and pages. Readers see a version selector in the top navigation bar and can switch between versions without leaving the site.
+
+Each version lives in its own directory in your repository, keeping content cleanly separated.
+
+## Set Up Version Dropdowns in docs.json
+
+Define versions using the `dropdowns` key inside `navigation.tabs`. Each dropdown item specifies a label (shown to the reader), a version identifier, and its own set of navigation groups.
+
+```json docs.json
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Acme API Docs",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "dropdowns": [
+          {
+            "dropdown": "v2 (Latest)",
+            "version": "v2",
+            "groups": [
+              {
+                "group": "Get Started",
+                "pages": [
+                  "v2/introduction",
+                  "v2/quickstart",
+                  "v2/authentication"
+                ]
+              },
+              {
+                "group": "API Reference",
+                "pages": [
+                  "v2/api/users",
+                  "v2/api/projects",
+                  "v2/api/webhooks"
+                ]
+              }
+            ]
+          },
+          {
+            "dropdown": "v1",
+            "version": "v1",
+            "groups": [
+              {
+                "group": "Get Started",
+                "pages": [
+                  "v1/introduction",
+                  "v1/quickstart",
+                  "v1/authentication"
+                ]
+              },
+              {
+                "group": "API Reference",
+                "pages": [
+                  "v1/api/users",
+                  "v1/api/projects"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The corresponding repository structure would look like this:
+
+```
+docs.json
+v2/
+  introduction.mdx
+  quickstart.mdx
+  authentication.mdx
+  api/
+    users.mdx
+    projects.mdx
+    webhooks.mdx
+v1/
+  introduction.mdx
+  quickstart.mdx
+  authentication.mdx
+  api/
+    users.mdx
+    projects.mdx
+```
+
+<Note>
+  The `version` field on each dropdown entry is used internally for linking between versions (see below). It must be a short, URL-safe string with no spaces.
+</Note>
+
+## Link Between Versions
+
+You'll often want to point readers from an older version's page to the equivalent page in the latest version — for example, at the top of every v1 page. Use a standard Markdown link with the versioned path:
+
+```mdx v1/introduction.mdx
+<Warning>
+  You are viewing the **v1** documentation. Acme API v1 reaches end of life on
+  December 31, 2025. [Migrate to v2](/v2/introduction) to access new features
+  and continued support.
+</Warning>
+```
+
+For cross-version links in the sidebar (e.g., a "Migration guide" entry in the v1 navigation that points to a v2 page), use the full versioned path in `docs.json`:
+
+```json
+{
+  "group": "Migration",
+  "pages": [
+    "v1/migration-overview",
+    "v2/migration/from-v1"
+  ]
+}
+```
+
+## Maintain Multiple Versions Over Time
+
+Once versioning is set up, keeping both versions accurate requires discipline. Follow these practices to avoid drift:
+
+<Steps>
+  <Step title="Fix critical errors in all affected versions">
+    If a factual error (wrong endpoint URL, incorrect parameter name) exists in a page, fix it in every version where it appears. Use your editor's project-wide search to find matching content across version directories.
+  </Step>
+  <Step title="Add a version banner to older docs">
+    Put a `<Warning>` callout at the top of every page in older versions linking readers to the latest version. This reduces support load from users reading outdated docs.
+  </Step>
+  <Step title="Freeze deprecated versions">
+    Once a version is end-of-life, stop making routine updates to it. Leave it published for reference but make clear in the banner that it is no longer maintained.
+  </Step>
+  <Step title="Archive truly obsolete versions">
+    When a version is so old that keeping it live adds confusion rather than value, remove its dropdown entry from `docs.json`. The files can stay in the repository for historical reference without appearing in the published docs.
+  </Step>
+</Steps>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Only publish versions users actually use">
+    Every published version is something your readers — and your team — must navigate. Publishing v1.0, v1.1, v1.2, v1.3, and v2.0 creates noise. Consolidate: publish the latest stable version and the most recent previous major version. Archive the rest.
+  </Accordion>
+  <Accordion title="Name versions from the reader's perspective">
+    Use labels like `v2 (Latest)` and `v1 (Legacy)` rather than internal codenames. Readers should immediately know which version to pick without knowing your release history.
+  </Accordion>
+  <Accordion title="Start versioning before you launch v2">
+    Don't wait until v2 ships to set up the directory structure. Create the `v2/` directory and start writing new content there while v1 is still the default. This avoids a disruptive restructuring right at launch.
+  </Accordion>
+  <Accordion title="Use a shared components pattern for content that doesn't change">
+    If large sections of your docs are identical across versions (legal notices, general concepts, glossaries), consider linking to a shared page outside the versioned directories rather than duplicating content. Duplication means double the maintenance burden.
+  </Accordion>
+  <Accordion title="Automate version banners with a reusable snippet">
+    Create a reusable MDX snippet (e.g., `snippets/legacy-banner.mdx`) that contains your standard end-of-life warning, then import it at the top of each legacy page. When you need to update the warning text, you only edit one file.
+
+    ```mdx snippets/legacy-banner.mdx
+    <Warning>
+      You are viewing legacy documentation. [Switch to the latest version](/v2/introduction)
+      for new features and active support.
+    </Warning>
+    ```
+
+    ```mdx v1/introduction.mdx
+    ---
+    title: "Introduction"
+    ---
+
+    import LegacyBanner from '/snippets/legacy-banner.mdx';
+
+    <LegacyBanner />
+
+    Welcome to the Acme API v1 documentation...
+    ```
+  </Accordion>
+</AccordionGroup>

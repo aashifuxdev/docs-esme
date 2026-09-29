@@ -1,0 +1,118 @@
+---
+title: "Configure and Customise Search for Your Mintlify Docs"
+sidebarTitle: "Search"
+description: "Mintlify's built-in search indexes all your pages automatically. Learn how to customise indexing, use the keyboard shortcut, and analyse search queries."
+---
+
+Every Mintlify docs site ships with built-in search out of the box — no third-party service, API key, or index configuration needed. Readers can search across your entire docs site the moment you publish, and the contextual AI layer surfaces the most relevant results based on meaning, not just exact keyword matches.
+
+## How Mintlify search works
+
+Mintlify search combines full-text matching with contextual AI ranking. When a reader submits a query:
+
+1. A full-text index matches pages that contain the query terms.
+2. An AI layer re-ranks results by semantic relevance, so a search for "rate limiting" surfaces pages that explain throttling even if they never use the exact phrase.
+3. Results are grouped by section and presented with a short excerpt so readers can immediately judge relevance before clicking.
+
+The index is rebuilt automatically every time you deploy a docs update, so new or edited pages are searchable within minutes of publishing.
+
+---
+
+## Open search with the keyboard shortcut
+
+Readers can open the search dialog from any page without using the mouse:
+
+| Platform | Shortcut |
+|---|---|
+| macOS | `⌘ K` |
+| Windows / Linux | `Ctrl K` |
+
+<Tip>
+  Highlight this shortcut in your onboarding content or README so new readers discover it early — it is consistently the fastest way to navigate a Mintlify docs site.
+</Tip>
+
+---
+
+## Full-text search across all pages
+
+By default, Mintlify indexes every page in your docs site, including:
+
+- All MDX page content
+- Page titles and descriptions from frontmatter
+- Headings at every level
+- Code block contents
+- Table cell text
+
+<Note>
+  Content inside `<Accordion>` components is indexed even when the accordion is collapsed, so readers can find information that is hidden from view by default.
+</Note>
+
+---
+
+## Customise what gets indexed
+
+### Exclude individual pages
+
+To prevent a page from appearing in search results, set `noindex` to `true` in its frontmatter:
+
+```mdx
+---
+title: "Internal Reference"
+noindex: true
+---
+```
+
+Use this for draft pages, internal-only references, or archive content you want to keep published but out of the main search index.
+
+### Exclude a section
+
+To exclude an entire section of your docs from search, set `noindex` on each page in that section, or mark the group in `docs.json`:
+
+```json docs.json
+{
+  "navigation": [
+    {
+      "group": "Internal",
+      "pages": ["internal/roadmap", "internal/decisions"],
+      "hidden": true
+    }
+  ]
+}
+```
+
+<Warning>
+  Setting `hidden: true` on a navigation group removes the section from the sidebar and from search results. Only use this for content that should not be discoverable by end users.
+</Warning>
+
+### Control excerpt content
+
+Mintlify uses the `description` frontmatter field as the preview excerpt in search results when one is present. Write clear, specific descriptions to help readers confirm a result is relevant before clicking:
+
+```mdx
+---
+title: "Authentication"
+description: "Set up API key and OAuth 2.0 authentication for the REST API, including token scopes and refresh flows."
+---
+```
+
+---
+
+## Search analytics in the dashboard
+
+Mintlify records every search query your readers submit and surfaces the data in the **Search** tab of your project dashboard. Use these reports to:
+
+<Accordion title="Find documentation gaps">
+  Queries with zero results — or queries with results that readers ignore — often indicate missing or hard-to-find content. Add new pages or improve headings to close these gaps.
+</Accordion>
+
+<Accordion title="Identify top search terms">
+  The most frequent queries reveal what your readers care about most. Prioritise these topics for deeper coverage, better examples, or a dedicated guide.
+</Accordion>
+
+<Accordion title="Measure search engagement">
+  Click-through rate on search results shows how well your page titles and descriptions match reader intent. Low click-through on a high-volume query is a signal to rewrite that page's frontmatter.
+</Accordion>
+
+<Info>
+  Search analytics data is retained for 90 days. Export queries from the dashboard as CSV if you need longer-term trend analysis or want to feed search data into an external BI tool.
+</Info>

@@ -1,0 +1,300 @@
+---
+title: "Navigation Structure for Your Docs Site"
+sidebarTitle: "Navigation"
+description: "Structure your docs sidebar using tabs, groups, pages, and anchors in the navigation object in docs.json — so every reader can find what they need fast."
+---
+
+Good navigation is what transforms a collection of pages into a documentation site. Mintlify reads your `navigation` configuration from `docs.json` and uses it to build the sidebar, top-level tabs, and external anchor links that readers see on every page. This page explains the structure and shows you complete examples for both single-section and multi-section sites.
+
+## How navigation works
+
+The `navigation` field in `docs.json` must be an **object** (not an array). Inside it you can define `tabs` for multi-section sites, `groups` for single-section sites, and `anchors` for pinned external links. Page slugs in the `pages` array map directly to file paths in your repository — for example, `"quickstart"` maps to `quickstart.mdx` at the repo root, and `"api-reference/introduction"` maps to `api-reference/introduction.mdx`.
+
+<Note>
+  A page file must exist on disk before you add it to `navigation`. Mintlify will warn you at build time about any slug that does not resolve to a file.
+</Note>
+
+---
+
+## Tabs-based navigation
+
+Use `tabs` when your docs cover multiple distinct sections — for example, a main guides section, an API reference, and an SDK reference. Each tab gets its own label and a set of `groups`.
+
+```json docs.json
+{
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["introduction", "quickstart", "installation"]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": ["concepts/overview", "concepts/projects", "concepts/deployments"]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/authentication",
+              "api-reference/errors"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "SDKs",
+        "groups": [
+          {
+            "group": "TypeScript",
+            "pages": ["sdk/typescript/overview", "sdk/typescript/client"]
+          },
+          {
+            "group": "Python",
+            "pages": ["sdk/python/overview", "sdk/python/client"]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+<Tip>
+  Keep each tab focused on a single audience or workflow. Readers scanning your navbar should immediately know which tab holds the content they need.
+</Tip>
+
+---
+
+## Groups-based navigation (single section)
+
+If your docs are a single cohesive section, skip `tabs` entirely and use `groups` directly inside the `navigation` object. This produces a sidebar without any tab switcher at the top.
+
+```json docs.json
+{
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": ["introduction", "quickstart"]
+      },
+      {
+        "group": "Configuration",
+        "pages": [
+          "configuration/settings",
+          "configuration/navigation",
+          "configuration/branding",
+          "configuration/custom-domain"
+        ]
+      },
+      {
+        "group": "Advanced",
+        "pages": ["advanced/custom-scripts", "advanced/versioning", "advanced/redirects"]
+      }
+    ]
+  }
+}
+```
+
+---
+
+## The `pages` array
+
+Each entry in a `pages` array is a **slug** — a relative path from your repo root to an MDX file, without the `.mdx` extension.
+
+<Tabs>
+  <Tab title="Flat pages">
+    ```json
+    {
+      "group": "Getting Started",
+      "pages": ["introduction", "quickstart", "installation"]
+    }
+    ```
+    These slugs map to `introduction.mdx`, `quickstart.mdx`, and `installation.mdx` at the repo root.
+  </Tab>
+  <Tab title="Nested pages">
+    ```json
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/introduction",
+        "api-reference/authentication",
+        "api-reference/endpoints/list-users",
+        "api-reference/endpoints/create-user"
+      ]
+    }
+    ```
+    Nested slugs map to the corresponding folder structure in your repo.
+  </Tab>
+  <Tab title="Nested groups">
+    You can nest a group inside another group's `pages` array to create sub-sections in the sidebar.
+    ```json
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/introduction",
+        {
+          "group": "Users",
+          "pages": [
+            "api-reference/users/list",
+            "api-reference/users/create",
+            "api-reference/users/delete"
+          ]
+        }
+      ]
+    }
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Anchors
+
+Anchors are pinned links that appear at the top of the sidebar, providing persistent access to key destinations regardless of which section the reader is viewing. Use them for external resources like your changelog, status page, or community forum — or for internal sections you want always visible.
+
+```json docs.json
+{
+  "navigation": {
+    "anchors": [
+      {
+        "anchor": "API Reference",
+        "icon": "rectangle-terminal",
+        "href": "https://api.example.com"
+      },
+      {
+        "anchor": "Changelog",
+        "icon": "list",
+        "href": "https://example.com/changelog"
+      },
+      {
+        "anchor": "Community",
+        "icon": "discord",
+        "href": "https://discord.gg/your-invite"
+      }
+    ],
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": ["introduction", "quickstart"]
+      }
+    ]
+  }
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `anchor` | string | The label displayed next to the icon in the sidebar. |
+| `icon` | string | A [Font Awesome](https://fontawesome.com/icons) icon name (e.g. `"discord"`, `"github"`, `"book"`). |
+| `href` | string | The URL the anchor links to. Can be internal or external. |
+
+### Global anchors
+
+Global anchors appear on **every page** of your docs regardless of which tab or section is active. Place them inside a `global` object inside `navigation` to ensure they stay visible across all content sections.
+
+```json docs.json
+{
+  "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "href": "https://mintlify.com/docs",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://mintlify.com/blog",
+          "icon": "newspaper"
+        }
+      ]
+    },
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["introduction", "quickstart"]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+<Info>
+  Anchors can point to pages inside your docs (use a relative path like `"introduction"`) or to any external URL. Use them sparingly so the sidebar stays focused on your core content.
+</Info>
+
+---
+
+## Putting it all together
+
+The example below shows a real-world `navigation` object that combines tabs, nested groups, and anchors.
+
+```json docs.json
+{
+  "navigation": {
+    "anchors": [
+      {
+        "anchor": "Status",
+        "icon": "signal",
+        "href": "https://status.example.com"
+      }
+    ],
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/settings",
+              "configuration/navigation",
+              "configuration/branding",
+              "configuration/custom-domain"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["api-reference/introduction", "api-reference/authentication"]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              {
+                "group": "Users",
+                "pages": ["api-reference/users/list", "api-reference/users/create"]
+              },
+              {
+                "group": "Projects",
+                "pages": ["api-reference/projects/list", "api-reference/projects/create"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+```

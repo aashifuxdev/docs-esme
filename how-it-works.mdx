@@ -1,0 +1,167 @@
+---
+title: "How Mintlify Works: From MDX Files to a Live Doc Site"
+sidebarTitle: "How It Works"
+description: "Understand the Mintlify workflow — MDX files, docs.json configuration, GitHub integration, and the automatic build and deploy pipeline."
+---
+
+Mintlify follows a simple, predictable workflow: you write content in MDX files, configure your site in a single JSON file, push to GitHub, and Mintlify handles the rest. This page walks through each part of that workflow so you know exactly what's happening at every stage.
+
+## Your project at a glance
+
+A Mintlify documentation project is just a folder in a GitHub repository. It contains your MDX content files and a `docs.json` configuration file. There's no framework to install, no build script to write, and no server to provision. The folder is the product.
+
+```text
+my-docs/
+├── docs.json              # site-wide configuration
+├── introduction.mdx
+├── quickstart.mdx
+└── guides/
+    ├── authentication.mdx
+    └── webhooks.mdx
+```
+
+<Tip>
+  You can place your docs folder at the root of a dedicated repository or inside a subdirectory of an existing monorepo. Tell Mintlify where to look in your project settings and it handles the rest.
+</Tip>
+
+## Step 1 — MDX files as your source of truth
+
+Every page on your doc site corresponds to an MDX file. MDX is Markdown with support for JSX components — so you can write plain prose, add fenced code blocks, and drop in interactive components like tabs, callouts, and step-by-step guides, all in the same file.
+
+```mdx
+---
+title: "Authenticating API Requests"
+sidebarTitle: "Authentication"
+description: "Learn how to generate and use API keys to authenticate your requests."
+---
+
+Every request to the API must include your API key in the `Authorization` header.
+
+<Warning>
+  Never commit your API key to a public repository. Use environment variables
+  or a secrets manager instead.
+</Warning>
+
+## Generating a key
+
+Navigate to **Settings → API Keys** in your dashboard and select **New Key**.
+```
+
+Mintlify renders the MDX file into a styled page at the path you define in your navigation config. The frontmatter block at the top of each file controls the page title, the sidebar label, and the meta description used for SEO.
+
+## Step 2 — docs.json configures your site
+
+`docs.json` is the single source of truth for your site's structure and appearance. It defines your navigation hierarchy, sets your logo and brand colors, configures your custom domain, and controls global features like search and analytics.
+
+```json
+{
+  "name": "Acme Docs",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "colors": {
+    "primary": "#0ea5e9"
+  },
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": ["introduction", "quickstart", "how-it-works"]
+    },
+    {
+      "group": "Guides",
+      "pages": ["guides/authentication", "guides/webhooks"]
+    }
+  ]
+}
+```
+
+<Note>
+  The `pages` values in your navigation are paths relative to your docs folder, without the `.mdx` extension. Mintlify matches each path to the corresponding file automatically.
+</Note>
+
+You don't need to restart anything when you edit `docs.json`. The local CLI preview and the deployed site both pick up changes as soon as you save and push the file.
+
+## Step 3 — GitHub integration powers automatic deploys
+
+When you connect a GitHub repository to your Mintlify project, Mintlify installs a lightweight GitHub App on that repository. The App watches your default branch for new commits.
+
+<Steps>
+  <Step title="You push a commit">
+    Any push to your default branch — whether it's a single typo fix or a batch of new pages — triggers the pipeline.
+  </Step>
+  <Step title="Mintlify detects the change">
+    The GitHub App notifies Mintlify's build service within seconds of the push. You can see this event appear in the **Deployments** tab of your dashboard almost immediately.
+  </Step>
+  <Step title="Your site is built">
+    Mintlify reads your MDX files and `docs.json`, validates the content and configuration, and assembles the static site. Most projects complete this step in under 30 seconds.
+  </Step>
+  <Step title="Your site is deployed">
+    The new build replaces the previous version on Mintlify's global CDN. Your readers see the updated content with no downtime. The old version is retained so you can roll back from the dashboard if needed.
+  </Step>
+</Steps>
+
+<Info>
+  Pull request previews are supported on paid plans. Each PR automatically gets its own preview URL, so you can review documentation changes in context before merging.
+</Info>
+
+## Step 4 — Local preview with the CLI
+
+The Mintlify CLI (`mint`) runs a local development server that mirrors the production rendering pipeline as closely as possible. When you run `mint dev` in your docs folder, the CLI:
+
+1. Reads your `docs.json` to build the navigation and apply your site theme.
+2. Renders each MDX file using the same component library as production.
+3. Serves the site at `http://localhost:3000` with hot-reload enabled.
+
+```bash
+# Start the local preview server
+mint dev
+
+# Output:
+# ✓ Mintlify dev server running at http://localhost:3000
+# ✓ Watching for file changes...
+```
+
+The local server hot-reloads on every file save — MDX content changes, `docs.json` updates, and image replacements all reflect immediately in the browser without a manual refresh.
+
+<Warning>
+  A small number of features — such as AI search, user analytics, and custom authentication — require a live deployed environment and are not available in the local preview.
+</Warning>
+
+## The full workflow in one view
+
+<Tabs>
+  <Tab title="Day-to-day writing">
+    1. Pull the latest changes from your default branch.
+    2. Run `mint dev` to start the local preview.
+    3. Edit MDX files in your preferred editor.
+    4. Verify the output at `http://localhost:3000`.
+    5. Commit and push — your live site updates automatically.
+  </Tab>
+  <Tab title="New page setup">
+    1. Create a new `.mdx` file in the appropriate folder.
+    2. Add frontmatter (`title`, `sidebarTitle`, `description`).
+    3. Add the file path to the `navigation` array in `docs.json`.
+    4. Write your content and preview locally.
+    5. Push to deploy.
+  </Tab>
+  <Tab title="Configuration change">
+    1. Open `docs.json` in your editor.
+    2. Update navigation, colors, logo, or other settings.
+    3. The local preview reflects the change immediately on save.
+    4. Push to deploy the updated configuration to production.
+  </Tab>
+</Tabs>
+
+## Summary
+
+Mintlify's workflow is intentionally simple: files in, docs out. You control the content and configuration through plain text files that live in your repository alongside your code. Mintlify handles rendering, hosting, deployment, search, and analytics — so your team can stay focused on writing.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Set up your first project and get to a live site in about five minutes.
+  </Card>
+  <Card title="Configuration Reference" icon="gear" href="/configuration/settings">
+    Explore every option available in `docs.json`.
+  </Card>
+</CardGroup>

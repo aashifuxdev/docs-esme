@@ -1,0 +1,238 @@
+---
+title: "Branding and Theming Your Docs Site"
+sidebarTitle: "Branding"
+description: "Customise your Mintlify docs with brand colors, logo, favicon, fonts, and light/dark mode — all controlled through docs.json with no CSS required."
+---
+
+Your documentation is a direct extension of your product's brand. Mintlify gives you control over colors, typography, logos, and light/dark mode behavior — all through your `docs.json` file, with no CSS required. This page covers every branding option so your docs look like they belong to your product from day one.
+
+---
+
+## Theme
+
+The `theme` field selects the base design system for your site. Each theme defines its own type scale, spacing rhythm, border radius, and component style. Your `colors` and `logo` settings are applied on top of whichever theme you choose.
+
+```json
+{
+  "theme": "luma"
+}
+```
+
+<CardGroup cols={2}>
+  <Card title="mint" icon="leaf">
+    The default theme — clean and versatile, works great for any docs site.
+  </Card>
+  <Card title="luma" icon="sun">
+    Crisp and modern with sharp corners and strong typographic contrast.
+  </Card>
+  <Card title="willow" icon="wind">
+    Rounded and friendly, with softer shadows and a lighter overall feel.
+  </Card>
+  <Card title="palm" icon="palm-tree">
+    Open and airy layout optimised for long-form content and readability.
+  </Card>
+  <Card title="linden" icon="tree">
+    Fresh and balanced with a natural feel.
+  </Card>
+  <Card title="almond" icon="seedling">
+    Warm neutral palette with a natural, minimal aesthetic.
+  </Card>
+  <Card title="aspen" icon="snowflake">
+    Cool tones and clean lines with a professional, enterprise-ready look.
+  </Card>
+  <Card title="maple" icon="tree-deciduous">
+    Rich, editorial typography paired with a bold color expression.
+  </Card>
+  <Card title="sequoia" icon="mountain">
+    Dense and structured, designed for large documentation sets.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Swap themes freely during development — theme changes take effect on the next build with no other configuration needed.
+</Tip>
+
+---
+
+## Colors
+
+The `colors` object lets you set your brand's primary color, and optionally override the light- and dark-mode variants that Mintlify derives from it. All values accept any valid CSS hex color string.
+
+### Primary color
+
+The `primary` color drives interactive elements across your docs: links, active sidebar items, buttons, and inline code highlights.
+
+```json
+{
+  "colors": {
+    "primary": "#1be49c"
+  }
+}
+```
+
+### Light and dark overrides
+
+By default Mintlify generates accessible light and dark variants from your `primary` color. You can override either variant explicitly when your brand palette requires it.
+
+```json
+{
+  "colors": {
+    "primary": "#1be49c",
+    "light": "#4df0b4",
+    "dark": "#0fad73"
+  }
+}
+```
+
+<Tabs>
+  <Tab title="Single primary color">
+    ```json
+    {
+      "colors": {
+        "primary": "#6366f1"
+      }
+    }
+    ```
+    Mintlify automatically derives accessible light and dark variants from `#6366f1`.
+  </Tab>
+  <Tab title="Full color control">
+    ```json
+    {
+      "colors": {
+        "primary": "#6366f1",
+        "light": "#818cf8",
+        "dark": "#4f46e5"
+      }
+    }
+    ```
+    Provide all three values when you need pixel-perfect brand compliance in both modes.
+  </Tab>
+</Tabs>
+
+| Field | Description |
+|---|---|
+| `primary` | Base brand color. Used for links, active states, and accents in both light and dark mode when `light`/`dark` are not set. |
+| `light` | Color used for interactive elements when the reader is in **light mode**. |
+| `dark` | Color used for interactive elements when the reader is in **dark mode**. |
+
+<Warning>
+  Ensure your primary color meets a **4.5:1 contrast ratio** against the page background in both light and dark mode. Low-contrast brand colors can make your docs difficult to read and may affect accessibility compliance.
+</Warning>
+
+---
+
+## Logo
+
+The `logo` object accepts separate image paths for light mode and dark mode. Both values can be a path relative to your repo root or an absolute URL.
+
+```json
+{
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  }
+}
+```
+
+<Accordion title="Logo best practices">
+  - **Use SVG files.** They render sharply at every resolution, including high-DPI displays.
+  - **Match the mode.** Your light-mode logo should work on a white or light background; your dark-mode logo should work on a dark background. Usually this means swapping a dark wordmark for a light one.
+  - **Keep it proportional.** Mintlify constrains logos to a max height of 28 px in the navbar. Design your artwork at this height so text and icons remain legible.
+  - **Test both modes.** Toggle dark mode in your preview and confirm both logos look correct before publishing.
+</Accordion>
+
+If your logo works on both light and dark backgrounds you can supply a single value:
+
+```json
+{
+  "logo": {
+    "light": "/logo/logo.svg",
+    "dark": "/logo/logo.svg"
+  }
+}
+```
+
+---
+
+## Favicon
+
+The `favicon` field sets the icon shown in browser tabs and bookmarks. It accepts a path relative to the repo root or an absolute URL.
+
+```json
+{
+  "favicon": "/favicon.png"
+}
+```
+
+<Note>
+  Mintlify supports `.png`, `.svg`, and `.ico` favicon formats. A 32×32 px PNG or a scalable SVG gives the best results across browsers and operating systems.
+</Note>
+
+---
+
+## Fonts
+
+The `fonts` object lets you override the default typefaces used across your docs. You can set a global font family and separately override the fonts used for headings and body copy.
+
+```json
+{
+  "fonts": {
+    "family": "Inter",
+    "heading": {
+      "family": "Playfair Display"
+    },
+    "body": {
+      "family": "Inter"
+    }
+  }
+}
+```
+
+<Tabs>
+  <Tab title="Google Fonts">
+    Any font available on [Google Fonts](https://fonts.google.com) can be referenced by its exact family name. Mintlify loads it automatically — no `<link>` tag required.
+    ```json
+    {
+      "fonts": {
+        "heading": { "family": "Sora" },
+        "body": { "family": "DM Sans" }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="System font stack">
+    Omit the `fonts` key entirely to use the theme's default system font stack, which loads instantly with no network request.
+    ```json
+    {
+      "theme": "mint",
+      "name": "My Docs"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Light and dark mode
+
+Mintlify supports light mode, dark mode, and system-preference following out of the box. By default, a mode toggle appears in the navbar so readers can pick their preference.
+
+You can lock your docs to a specific mode if your brand requires it:
+
+```json
+{
+  "appearance": {
+    "default": "dark",
+    "strict": true
+  }
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `appearance.default` | `"light"` \| `"dark"` \| `"system"` | The initial mode applied before a reader has set a preference. Defaults to `"system"`. |
+| `appearance.strict` | boolean | When `true`, the mode toggle is hidden and the `default` value is always used. Defaults to `false`. |
+
+<Info>
+  Setting `strict: true` removes the reader's ability to switch modes. Only use this if your brand guidelines require a single-mode experience — most readers prefer to stay in their system preference.
+</Info>

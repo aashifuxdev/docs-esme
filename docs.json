@@ -1,0 +1,113 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "luma",
+  "name": "Mintlify",
+  "colors": {
+    "primary": "#1be49c",
+    "light": "#0c8c5c",
+    "dark": "#0c0c0c"
+  },
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "https://media.brand.dev/07fcb57b-76a5-49f6-abdb-740da69c791f.svg",
+    "dark": "https://media.brand.dev/07fcb57b-76a5-49f6-abdb-740da69c791f.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@mintlify.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get Started",
+      "href": "https://app.mintlify.com"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "how-it-works"
+            ]
+          },
+          {
+            "group": "Writing Content",
+            "pages": [
+              "writing/pages",
+              "writing/components",
+              "writing/code-blocks",
+              "writing/ai-writing"
+            ]
+          },
+          {
+            "group": "Site Configuration",
+            "pages": [
+              "configuration/settings",
+              "configuration/navigation",
+              "configuration/branding",
+              "configuration/custom-domain"
+            ]
+          },
+          {
+            "group": "Publishing",
+            "pages": [
+              "publishing/github",
+              "publishing/deployments",
+              "publishing/versioning"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/ai-tools",
+              "integrations/analytics",
+              "integrations/search"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "Configuration Reference",
+            "pages": [
+              "reference/docs-json",
+              "reference/frontmatter",
+              "reference/components"
+            ]
+          },
+          {
+            "group": "CLI",
+            "pages": [
+              "reference/cli-overview",
+              "reference/cli-commands"
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "pages": [
+              "reference/faq",
+              "reference/common-errors"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/mintlify",
+      "github": "https://github.com/mintlify",
+      "linkedin": "https://linkedin.com/company/mintlify"
+    }
+  }
+}

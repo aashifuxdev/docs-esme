@@ -1,0 +1,250 @@
+---
+title: "General Site Settings for Your Docs"
+sidebarTitle: "Settings"
+description: "Configure your site name, theme, favicon, logo, navbar, footer, and AI contextual options in docs.json — the central config file for your Mintlify docs."
+---
+
+Your `docs.json` file is the central configuration for your Mintlify documentation site. Every setting — from the site name displayed in the browser tab to the links in your navbar — lives here alongside your content files. This page walks you through the most important top-level fields and shows you a complete working example to get started.
+
+## Complete example
+
+The example below covers all the key settings described on this page. Place `docs.json` at the root of your docs repository alongside your MDX files.
+
+```json docs.json
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "luma",
+  "name": "My Docs",
+  "colors": { "primary": "#1be49c" },
+  "favicon": "/favicon.png",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navbar": {
+    "links": [
+      { "label": "Support", "href": "mailto:support@example.com" }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get Started",
+      "href": "https://app.example.com"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/your-org",
+      "x": "https://x.com/your-org"
+    }
+  }
+}
+```
+
+---
+
+## Settings reference
+
+### `$schema`
+
+Add the `$schema` field to enable autocomplete and inline validation in editors that support JSON Schema (such as VS Code).
+
+```json
+{
+  "$schema": "https://mintlify.com/docs.json"
+}
+```
+
+<Tip>
+  Adding `$schema` is optional but strongly recommended. Your editor will warn you about typos and invalid values as you type.
+</Tip>
+
+---
+
+### `name`
+
+The `name` field sets the site-wide display name for your documentation. It appears in the browser tab title, the default Open Graph title, and anywhere Mintlify uses a short reference to your docs.
+
+```json
+{
+  "name": "My Docs"
+}
+```
+
+---
+
+### `theme`
+
+The `theme` field selects the visual design system applied to your entire site. Each theme ships with a distinct set of typography, spacing, and component styles.
+
+<CardGroup cols={3}>
+  <Card title="mint" icon="leaf">
+    The default theme — clean and versatile, works great for any docs site.
+  </Card>
+  <Card title="luma" icon="sun">
+    Modern with sharp edges and strong typographic contrast.
+  </Card>
+  <Card title="willow" icon="wind">
+    Soft and approachable with rounded elements.
+  </Card>
+  <Card title="palm" icon="palm-tree">
+    Light and airy, optimised for readability.
+  </Card>
+  <Card title="linden" icon="tree">
+    Fresh and balanced with a natural feel.
+  </Card>
+  <Card title="almond" icon="seedling">
+    Warm neutrals with a natural, minimal feel.
+  </Card>
+  <Card title="aspen" icon="snowflake">
+    Crisp and cool with a professional edge.
+  </Card>
+  <Card title="maple" icon="tree-deciduous">
+    Rich tones with an editorial sensibility.
+  </Card>
+  <Card title="sequoia" icon="mountain">
+    Bold and structured, built for large-scale docs.
+  </Card>
+</CardGroup>
+
+```json
+{
+  "theme": "luma"
+}
+```
+
+---
+
+### `favicon`
+
+The `favicon` field accepts a path relative to the root of your docs repository or an absolute URL. Mintlify supports `.png`, `.svg`, and `.ico` files.
+
+```json
+{
+  "favicon": "/favicon.png"
+}
+```
+
+<Note>
+  Place your favicon file at the root of your repository (e.g. `favicon.png`) so the path `/favicon.png` resolves correctly during the build.
+</Note>
+
+---
+
+### `logo`
+
+The `logo` field lets you supply separate image files for light mode and dark mode. Both `light` and `dark` accept a path relative to your repo root or an absolute URL.
+
+```json
+{
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  }
+}
+```
+
+<Tip>
+  Using SVG files for your logo keeps it sharp at every screen resolution and display density. Aim for a height of 24–32 px in the artwork itself so the logo renders well in the navbar.
+</Tip>
+
+---
+
+### `navbar`
+
+The `navbar` object controls the top navigation bar. You can add plain text links with `links` and a single highlighted call-to-action button with `primary`.
+
+<Tabs>
+  <Tab title="With a CTA button">
+    ```json
+    {
+      "navbar": {
+        "links": [
+          { "label": "Blog", "href": "https://example.com/blog" },
+          { "label": "Support", "href": "mailto:support@example.com" }
+        ],
+        "primary": {
+          "type": "button",
+          "label": "Get Started",
+          "href": "https://app.example.com"
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Links only">
+    ```json
+    {
+      "navbar": {
+        "links": [
+          { "label": "Changelog", "href": "https://example.com/changelog" },
+          { "label": "GitHub", "href": "https://github.com/your-org" }
+        ]
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+| Field | Type | Description |
+|---|---|---|
+| `links` | array | Plain navigation links shown in the navbar. Each item needs a `label` and an `href`. |
+| `primary.type` | string | Set to `"button"` to render a filled CTA button. |
+| `primary.label` | string | The visible button text. |
+| `primary.href` | string | The URL the button links to. |
+
+---
+
+### `footer`
+
+The `footer` object lets you add social media links that appear in the site footer. Mintlify renders each entry as a branded icon link automatically.
+
+```json
+{
+  "footer": {
+    "socials": {
+      "github": "https://github.com/your-org",
+      "x": "https://x.com/your-org",
+      "linkedin": "https://linkedin.com/company/your-org",
+      "discord": "https://discord.gg/your-invite"
+    }
+  }
+}
+```
+
+Supported social keys include `github`, `x` (Twitter/X), `linkedin`, `discord`, `slack`, `youtube`, and `instagram`.
+
+---
+
+### `contextual`
+
+The `contextual` field configures the AI-powered contextual assistance features embedded in your docs, such as the search overlay and in-page chat.
+
+```json
+{
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "mcp", "cursor", "vscode"]
+  }
+}
+```
+
+<Accordion title="Available contextual options">
+  | Option | Description |
+  |---|---|
+  | `copy` | Adds a one-click button to copy the page as Markdown for pasting into AI tools. |
+  | `view` | Opens the current page as raw Markdown. |
+  | `assistant` | Opens the built-in Mintlify assistant with the current page as context. |
+  | `chatgpt` | Opens the page content in a new ChatGPT conversation. |
+  | `claude` | Opens the page content in a new Claude conversation. |
+  | `perplexity` | Opens the page content in a new Perplexity conversation. |
+  | `grok` | Opens the page content in a new Grok conversation. |
+  | `aistudio` | Opens the page content in Google AI Studio. |
+  | `devin` | Opens the page content in a Devin session. |
+  | `mcp` | Copies your MCP server URL to the clipboard. |
+  | `cursor` | Installs your hosted MCP server in Cursor. |
+  | `vscode` | Installs your hosted MCP server in VS Code. |
+  | `download-pdf` | Downloads the current page as a PDF (Enterprise plans). |
+</Accordion>
+
+<Info>
+  Contextual options appear in a toolbar on each documentation page. You can include as many or as few as needed — set `options` to an empty array `[]` to disable the toolbar entirely. Options display in the order you list them.
+</Info>

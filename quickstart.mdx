@@ -1,0 +1,131 @@
+---
+title: "Quickstart: Launch Your Documentation Site in Minutes"
+sidebarTitle: "Quickstart"
+description: "Create a Mintlify project, connect GitHub, install the CLI, and publish your first documentation site — all in about five minutes."
+---
+
+This guide takes you from a blank slate to a live, publicly accessible documentation site. You'll sign up, create a project, connect your GitHub repository, preview locally with the CLI, and push your first deploy. Let's go.
+
+<Info>
+  You'll need a GitHub account and Node.js 18 or later installed on your machine. If you don't want to use the CLI right away, you can edit content directly in the Mintlify hosted editor and skip the local preview steps.
+</Info>
+
+<Steps>
+  <Step title="Sign up for Mintlify">
+    Go to [app.mintlify.com](https://app.mintlify.com) and create a free account. You can sign up with your GitHub account for the fastest path to repository access.
+
+    <Tip>
+      Using GitHub to sign up grants Mintlify the OAuth permissions it needs to connect your repositories in the next step — no extra authorization required.
+    </Tip>
+  </Step>
+
+  <Step title="Create a new documentation project">
+    After signing in, select **New Project** from your dashboard. Give your project a name — this becomes the default subdomain for your doc site (for example, `your-project.mintlify.app`).
+
+    Mintlify creates a starter repository in your GitHub account with a `docs.json` config file and a few example MDX pages so you have a working structure from day one.
+  </Step>
+
+  <Step title="Connect your GitHub repository">
+    If you started from the Mintlify-generated repo, it's already connected. To link an existing repository instead, go to **Project Settings → Repository** and authorize the Mintlify GitHub App for the repo you want to use.
+
+    Mintlify watches your default branch. Every push triggers an automatic build — no webhooks or CI configuration needed on your side.
+
+    <Note>
+      You can point Mintlify at a subdirectory of a monorepo (for example, `packages/docs`) using the **Docs directory** field in project settings.
+    </Note>
+  </Step>
+
+  <Step title="Install the Mintlify CLI">
+    Install the CLI globally so you can preview changes locally before pushing:
+
+    <CodeGroup>
+      ```bash npm
+      npm install -g mint
+      ```
+
+      ```bash yarn
+      yarn global add mint
+      ```
+
+      ```bash pnpm
+      pnpm add -g mint
+      ```
+    </CodeGroup>
+
+    Confirm the install succeeded:
+
+    ```bash
+    mint --version
+    ```
+  </Step>
+
+  <Step title="Preview your docs locally">
+    Navigate to the root of your docs repository (the folder containing `docs.json`) and start the local development server:
+
+    ```bash
+    mint dev
+    ```
+
+    Mintlify starts a local server and opens your docs at [http://localhost:3000](http://localhost:3000). The preview hot-reloads as you edit MDX files, so you see changes instantly without refreshing.
+
+    ```
+    ✓ Mintlify dev server running at http://localhost:3000
+    ✓ Watching for file changes...
+    ```
+
+    <Tip>
+      Run `mint dev` from the same directory as your `docs.json` file. If Mintlify can't find the config, it will prompt you to specify the path.
+    </Tip>
+  </Step>
+
+  <Step title="Write your first page">
+    Open any `.mdx` file in your editor and make a change — update the title, add a paragraph, or drop in a component. Save the file and watch the preview update in your browser.
+
+    Every MDX file starts with a frontmatter block that sets the page title, sidebar label, and description:
+
+    ```mdx
+    ---
+    title: "Getting Started with the API"
+    sidebarTitle: "Getting Started"
+    description: "Authenticate and make your first API request in under five minutes."
+    ---
+
+    Your content starts here...
+    ```
+  </Step>
+
+  <Step title="Push to deploy">
+    When you're happy with your changes, commit and push to your default branch:
+
+    ```bash
+    git add .
+    git commit -m "docs: add getting started page"
+    git push
+    ```
+
+    Mintlify detects the push, builds your site, and deploys it automatically. Your live site at `your-project.mintlify.app` updates within seconds. You can watch the deploy progress in the **Deployments** tab of your Mintlify dashboard.
+
+    <Note>
+      Build times are typically under 30 seconds for most projects. Larger sites with hundreds of pages may take slightly longer.
+    </Note>
+  </Step>
+</Steps>
+
+## What's next?
+
+You have a live documentation site. Here are the most useful things to explore next:
+
+<CardGroup cols={2}>
+  <Card title="Writing Pages" icon="pen-nib" href="/writing/pages">
+    Learn how to use Mintlify's full component library to build rich, interactive documentation pages.
+  </Card>
+  <Card title="Configuration" icon="gear" href="/configuration/settings">
+    Customize your navigation structure, colors, logo, and global site settings in `docs.json`.
+  </Card>
+  <Card title="Custom Domain" icon="globe" href="/configuration/custom-domain">
+    Point your own domain at your Mintlify site with a simple DNS change.
+  </Card>
+  <Card title="AI Writing Tools" icon="sparkles" href="/integrations/ai-tools">
+    Use Mintlify's AI assistant to draft, improve, and maintain your content.
+  </Card>
+</CardGroup>

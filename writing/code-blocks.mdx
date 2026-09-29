@@ -1,0 +1,418 @@
+---
+title: "Code Block Formatting: Syntax, Diffs, and CodeGroup"
+sidebarTitle: "Code Blocks"
+description: "Add syntax highlighting, filenames, line numbers, line highlights, diff markers, and multi-language groups to code blocks in your Mintlify docs."
+---
+
+Code blocks are one of the most important elements in developer documentation. Mintlify extends standard Markdown fenced code blocks with a rich set of display features — filenames, line numbers, targeted highlighting, diff markers, and grouped multi-language examples — all driven by simple annotations in the opening fence line.
+
+## Basic Fenced Code Blocks
+
+Wrap any code snippet in triple backticks and specify a language tag immediately after the opening fence. Mintlify applies syntax highlighting automatically for every major programming language.
+
+````mdx
+```javascript
+const greeting = "Hello, world!";
+console.log(greeting);
+```
+````
+
+**Rendered result:**
+
+```javascript
+const greeting = "Hello, world!";
+console.log(greeting);
+```
+
+Supported language tags include `javascript`, `typescript`, `python`, `go`, `rust`, `java`, `bash`, `json`, `yaml`, `toml`, `sql`, `html`, `css`, `mdx`, and [many more](https://shiki.style/languages).
+
+## Titles and Filenames
+
+Add a filename or title immediately after the language tag, separated by a space. The title appears as a label in the top bar of the rendered code block, giving readers instant context about where the code lives.
+
+````mdx
+```python app.py
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+```
+````
+
+**Rendered result:**
+
+```python app.py
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+```
+
+Use realistic filenames like `main.go`, `config.yaml`, or `.env.example` to mirror the actual file a reader would edit in their project.
+
+## Line Numbers
+
+Add the `lines` meta flag to display line numbers alongside your code. Line numbers are especially useful in long snippets where your prose references specific lines by number.
+
+````mdx
+```typescript lines
+import express from "express";
+
+const app = express();
+const PORT = process.env.PORT ?? 3000;
+
+app.get("/", (req, res) => {
+  res.json({ message: "Hello from Express" });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+```
+````
+
+**Rendered result:**
+
+```typescript lines
+import express from "express";
+
+const app = express();
+const PORT = process.env.PORT ?? 3000;
+
+app.get("/", (req, res) => {
+  res.json({ message: "Hello from Express" });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+```
+
+## Line Highlighting
+
+Use the `highlight` meta property to draw attention to the lines that matter most. You can specify individual lines, ranges, or a combination of both.
+
+````mdx
+```python highlight={5,9-11}
+import os
+import anthropic
+
+client = anthropic.Anthropic(
+    api_key=os.environ.get("ANTHROPIC_API_KEY"),
+)
+
+message = client.messages.create(
+    model="claude-opus-4-5",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello, Claude"}],
+)
+print(message.content)
+```
+````
+
+**Rendered result:**
+
+```python highlight={5,9-11}
+import os
+import anthropic
+
+client = anthropic.Anthropic(
+    api_key=os.environ.get("ANTHROPIC_API_KEY"),
+)
+
+message = client.messages.create(
+    model="claude-opus-4-5",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello, Claude"}],
+)
+print(message.content)
+```
+
+Line 5 and lines 9–11 are highlighted above. Use highlighting to guide readers through a snippet step-by-step when your prose describes specific parts of the code.
+
+## Diff Markers
+
+Show exactly what changed between two versions of a file using inline diff markers. Append `// [!code ++]` to mark an added line and `// [!code --]` to mark a removed line. The rendered block displays the familiar green/red diff colors without showing the annotation comment itself.
+
+````mdx
+```javascript
+async function fetchUser(id) {
+  const res = await fetch(`/api/users/${id}`); // [!code --]
+  const res = await fetch(`/api/v2/users/${id}`); // [!code ++]
+
+  if (!res.ok) { // [!code --]
+  if (!res.ok || res.status === 404) { // [!code ++]
+    throw new Error("User not found");
+  }
+
+  return res.json();
+}
+```
+````
+
+**Rendered result:**
+
+```javascript
+async function fetchUser(id) {
+  const res = await fetch(`/api/users/${id}`); // [!code --]
+  const res = await fetch(`/api/v2/users/${id}`); // [!code ++]
+
+  if (!res.ok) { // [!code --]
+  if (!res.ok || res.status === 404) { // [!code ++]
+    throw new Error("User not found");
+  }
+
+  return res.json();
+}
+```
+
+Diff markers are ideal for migration guides and changelog entries where you need to show the exact lines a reader must add or remove.
+
+## CodeGroup — Multi-Language Examples
+
+Wrap multiple code blocks in a `<CodeGroup>` component to display them as a tabbed unit. Readers click a language tab to switch between examples while staying on the same page. This is the recommended pattern for any API call or SDK example that has implementations in more than one language.
+
+````mdx
+<CodeGroup>
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.example.com/v1/completions",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json={"prompt": "Explain caching in one sentence.", "max_tokens": 64},
+)
+print(response.json())
+```
+
+```javascript Node.js
+const response = await fetch("https://api.example.com/v1/completions", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    prompt: "Explain caching in one sentence.",
+    max_tokens: 64,
+  }),
+});
+const data = await response.json();
+console.log(data);
+```
+
+```bash cURL
+curl https://api.example.com/v1/completions \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Explain caching in one sentence.", "max_tokens": 64}'
+```
+</CodeGroup>
+````
+
+**Rendered result:**
+
+<CodeGroup>
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.example.com/v1/completions",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json={"prompt": "Explain caching in one sentence.", "max_tokens": 64},
+)
+print(response.json())
+```
+
+```javascript Node.js
+const response = await fetch("https://api.example.com/v1/completions", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    prompt: "Explain caching in one sentence.",
+    max_tokens: 64,
+  }),
+});
+const data = await response.json();
+console.log(data);
+```
+
+```bash cURL
+curl https://api.example.com/v1/completions \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Explain caching in one sentence.", "max_tokens": 64}'
+```
+</CodeGroup>
+
+The tab label for each block is the title you write immediately after the language tag (e.g., `Python`, `Node.js`, `cURL`).
+
+## Expandable Code Blocks
+
+Add the `expandable` meta flag to collapse a long code block behind a **Show more** toggle. This keeps pages readable when a complete example is necessary for reference but too long to display inline.
+
+````mdx
+```yaml expandable
+openapi: 3.1.0
+info:
+  title: Example API
+  version: 1.0.0
+  description: A minimal OpenAPI specification example.
+
+servers:
+  - url: https://api.example.com/v1
+
+paths:
+  /users:
+    get:
+      summary: List all users
+      operationId: listUsers
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: A paginated list of users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserList"
+
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      operationId: getUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A single user object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+    UserList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        total:
+          type: integer
+```
+````
+
+<Tip>
+  Use `expandable` for complete configuration files, full OpenAPI specs, and other reference snippets that readers need occasionally but shouldn't have to scroll past every time.
+</Tip>
+
+## Combining Features
+
+You can combine meta flags on a single code block. The following block uses a filename, line numbers, and line highlighting together:
+
+````mdx
+```typescript server.ts lines highlight={12-16}
+import express, { Request, Response, NextFunction } from "express";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+
+const app = express();
+
+app.use(helmet());
+app.use(express.json());
+
+const limiter = rateLimit({ windowMs: 60_000, max: 100 });
+
+app.use("/api", limiter);
+app.get("/api/ping", (_req: Request, res: Response) => {
+  res.json({ pong: true, ts: Date.now() });
+});
+
+app.use((_err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  res.status(500).json({ error: "Internal server error" });
+});
+
+app.listen(3000);
+```
+````
+
+**Rendered result:**
+
+```typescript server.ts lines highlight={12-16}
+import express, { Request, Response, NextFunction } from "express";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+
+const app = express();
+
+app.use(helmet());
+app.use(express.json());
+
+const limiter = rateLimit({ windowMs: 60_000, max: 100 });
+
+app.use("/api", limiter);
+app.get("/api/ping", (_req: Request, res: Response) => {
+  res.json({ pong: true, ts: Date.now() });
+});
+
+app.use((_err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  res.status(500).json({ error: "Internal server error" });
+});
+
+app.listen(3000);
+```
+
+## Quick Reference
+
+| Feature | Syntax |
+|---|---|
+| Language tag | ` ```python ` |
+| Filename | ` ```python app.py ` |
+| Line numbers | ` ```python lines ` |
+| Line highlighting | ` ```python highlight={1,3-5} ` |
+| Expandable | ` ```python expandable ` |
+| Added line (diff) | Append `// [!code ++]` to the line |
+| Removed line (diff) | Append `// [!code --]` to the line |
+| Multi-language tabs | Wrap blocks in `<CodeGroup>` |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Components" icon="puzzle-piece" href="/writing/components">
+    Use Cards, Steps, Tabs, and other components alongside your code examples.
+  </Card>
+  <Card title="AI Writing" icon="wand-magic-sparkles" href="/writing/ai-writing">
+    Let AI generate and refine code snippets directly in your editor.
+  </Card>
+</CardGroup>

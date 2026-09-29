@@ -1,0 +1,74 @@
+---
+title: "Introduction to Mintlify: Your Documentation Platform"
+sidebarTitle: "Introduction"
+description: "Mintlify is a documentation platform for developer teams. Build, publish, and maintain beautiful doc sites from MDX files with AI-assisted writing."
+---
+
+Mintlify is a documentation platform that turns MDX files in a GitHub repository into a fast, beautiful, fully hosted doc site — with no infrastructure to manage, no build pipeline to configure, and no design system to maintain from scratch. You write the content; Mintlify handles everything else.
+
+## What you can build
+
+Teams use Mintlify to ship product documentation, API references, internal knowledge bases, and developer guides. The platform is flexible enough for a two-person startup and robust enough for a large enterprise engineering org.
+
+<CardGroup cols={2}>
+  <Card title="MDX pages" icon="file-code">
+    Every page is an MDX file — plain Markdown enriched with interactive React components. Write in the editor you already use and commit like any other code.
+  </Card>
+  <Card title="Git-driven publishing" icon="code-branch">
+    Connect your GitHub repository once. Every push to your default branch triggers an automatic build and deploy — no CI configuration needed.
+  </Card>
+  <Card title="AI writing tools" icon="wand-magic-sparkles">
+    Mintlify's built-in AI assistant helps you draft new pages, rewrite unclear sections, and surface content gaps before your users notice them.
+  </Card>
+  <Card title="Rich component library" icon="puzzle-piece">
+    Drop in callouts, code groups, tabs, cards, steps, and API playground blocks using simple JSX syntax — no custom component code required.
+  </Card>
+  <Card title="Custom branding" icon="palette">
+    Set your logo, colors, fonts, and navigation structure in a single `docs.json` file. Your docs look like your product, not a generic template.
+  </Card>
+  <Card title="Analytics & search" icon="chart-bar">
+    Understand what your users are reading (and what they can't find) with built-in page analytics and full-text search out of the box.
+  </Card>
+</CardGroup>
+
+## Who Mintlify is for
+
+Mintlify is designed for teams that ship software and need documentation that keeps pace with their product.
+
+<AccordionGroup>
+  <Accordion title="Developer teams and startups">
+    If you're moving fast and can't afford to maintain a custom docs site, Mintlify gives you a production-quality result with minimal setup. Write your first page and have it live the same day.
+  </Accordion>
+  <Accordion title="Developer-experience and DevRel teams">
+    Mintlify's component library and AI tools let your DX team focus on content quality rather than tooling. Built-in analytics show you exactly where users get stuck.
+  </Accordion>
+  <Accordion title="Enterprise engineering orgs">
+    Custom domains, SSO, private docs, role-based access, and audit logs give larger teams the controls they need without sacrificing the authoring experience.
+  </Accordion>
+</AccordionGroup>
+
+## How content is structured
+
+A Mintlify project is a folder of MDX files plus a single `docs.json` configuration file. The JSON file defines your site's navigation, branding, and global settings. The MDX files contain your content. That's the entire mental model.
+
+```text
+my-docs/
+├── docs.json          # site configuration
+├── introduction.mdx   # this page
+├── quickstart.mdx
+└── guides/
+    ├── authentication.mdx
+    └── webhooks.mdx
+```
+
+<Note>
+  You don't need a special folder structure — Mintlify reads the navigation paths you define in `docs.json` and serves the matching MDX files. Organize your files however makes sense for your team.
+</Note>
+
+## Ready to get started?
+
+The fastest way to understand Mintlify is to see your own content live. Follow the quickstart and you'll have a deployed doc site in about five minutes.
+
+<Card title="Quickstart →" icon="rocket" href="/quickstart">
+  Create a project, connect your repo, and go live in minutes.
+</Card>

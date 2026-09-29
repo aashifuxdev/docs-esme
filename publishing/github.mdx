@@ -1,0 +1,87 @@
+---
+title: "Connect Mintlify to GitHub for Automatic Deployments"
+sidebarTitle: "GitHub"
+description: "Link your GitHub repository to Mintlify and get automatic production deployments and pull request previews on every push to your default branch."
+---
+
+Connecting Mintlify to GitHub is the fastest way to keep your documentation in sync with your codebase. Once linked, every push to your default branch deploys to production automatically, and every pull request gets its own live preview URL so your team can review changes before they go live.
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+- A [Mintlify account](https://dashboard.mintlify.com) with an active project
+- A GitHub account with admin access to the repository you want to connect
+- Your documentation files committed to the repository (a `docs.json` file at the root)
+
+## Install the Mintlify GitHub App
+
+<Steps>
+  <Step title="Open GitHub settings in your dashboard">
+    Go to [dashboard.mintlify.com/settings/organization/github-app](https://dashboard.mintlify.com/settings/organization/github-app) and click **Connect GitHub**.
+
+    You'll be redirected to GitHub to authorize the Mintlify GitHub App.
+  </Step>
+  <Step title="Install the GitHub App">
+    On the GitHub authorization page, choose whether to install Mintlify on **all repositories** or **select repositories**. Selecting specific repositories is recommended for tighter access control.
+
+    Click **Install & Authorize** to confirm.
+  </Step>
+  <Step title="Grant access to your docs repository">
+    Back in the Mintlify dashboard, use the repository dropdown to select the repo that contains your documentation. Mintlify will verify it can find a valid `docs.json` at the root of the repository.
+  </Step>
+  <Step title="Confirm your default branch">
+    Mintlify automatically detects your default branch (usually `main` or `master`). Confirm the correct branch in the **Production branch** field. Every push to this branch will trigger a production deployment.
+  </Step>
+  <Step title="Trigger your first deployment">
+    Click **Save** to complete the setup. Mintlify immediately queues a deployment from the current state of your default branch. Head to the [Deployments](/publishing/deployments) page in your dashboard to watch the build progress.
+  </Step>
+</Steps>
+
+<Note>
+  Changes pushed to the default branch deploy to production automatically — no manual action required. See [Deployments](/publishing/deployments) for details on monitoring build status and rolling back if needed.
+</Note>
+
+## Pull Request Previews
+
+Every pull request opened against your connected repository automatically receives a unique preview URL. Mintlify posts the URL as a GitHub status check on the PR so your team can review documentation changes before merging.
+
+<CardGroup cols={2}>
+  <Card title="Isolated previews" icon="split">
+    Each PR preview is fully independent. Changes in one preview never affect your production docs or any other PR's preview.
+  </Card>
+  <Card title="Auto-updated" icon="rotate">
+    Preview builds update automatically on every new commit pushed to the PR branch — no extra steps needed.
+  </Card>
+  <Card title="GitHub status checks" icon="circle-check">
+    Mintlify posts a build status directly on the PR. You can require a passing Mintlify check before merging from your branch protection rules.
+  </Card>
+  <Card title="Shareable links" icon="link">
+    Share the preview URL with stakeholders, designers, or reviewers before the PR is merged.
+  </Card>
+</CardGroup>
+
+## Adjust Repository Access
+
+If you need to add or remove repository access after the initial install, go back to [dashboard.mintlify.com/settings/organization/github-app](https://dashboard.mintlify.com/settings/organization/github-app) and click **Manage on GitHub**. This opens the GitHub App settings page where you can update repository permissions at any time.
+
+<Tip>
+  You can also manage the GitHub App installation directly from your GitHub account at **Settings → Applications → Installed GitHub Apps → Mintlify**.
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Mintlify can't find my docs.json">
+    Mintlify looks for `docs.json` at the **root** of your repository. If your docs live in a subdirectory (e.g., `docs/`), set the **Docs directory** field in your project settings to the correct path.
+  </Accordion>
+  <Accordion title="No deployment triggered after pushing">
+    Check that the GitHub App still has access to your repository by visiting your GitHub App settings. If access was accidentally revoked, reinstall the app and reauthorize the repository.
+  </Accordion>
+  <Accordion title="Pull request previews are not appearing">
+    Previews require the Mintlify GitHub App to have **read access to pull requests**. Verify this permission is granted under your GitHub App settings, then close and reopen the PR to trigger a fresh preview build.
+  </Accordion>
+  <Accordion title="Build failing on a specific branch">
+    Open the [Deployments](/publishing/deployments) dashboard and select the failing deployment to view its build log. The log shows exactly which file or configuration caused the error.
+  </Accordion>
+</AccordionGroup>

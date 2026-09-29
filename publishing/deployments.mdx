@@ -1,0 +1,189 @@
+---
+title: "Manage Deployments and Preview Your Mintlify Docs Locally"
+sidebarTitle: "Deployments"
+description: "Understand how Mintlify builds and publishes your docs, view deployment logs, roll back changes, and preview locally with the Mintlify CLI."
+---
+
+Every time you push a commit to your connected GitHub repository, Mintlify automatically kicks off a new deployment. Understanding how deployments work helps you ship documentation confidently, catch errors before they reach readers, and recover quickly when something goes wrong.
+
+## How Deployments Work
+
+Mintlify uses a Git-based deployment model. When you push a commit to GitHub, the following happens:
+
+<Steps>
+  <Step title="Webhook received">
+    GitHub sends a webhook to Mintlify notifying it of the new push. This happens within seconds of your push completing.
+  </Step>
+  <Step title="Build queued">
+    Mintlify queues a build for your project. The build reads your `docs.json`, resolves all pages and assets, and compiles the output.
+  </Step>
+  <Step title="Build runs">
+    The build validates your configuration and MDX files, resolves navigation, and generates the static site output. This typically completes in under a minute.
+  </Step>
+  <Step title="Deployment goes live">
+    Once the build succeeds, the new version is promoted to production (or to the preview URL, for pull requests) and your readers immediately see the updated documentation.
+  </Step>
+</Steps>
+
+<Note>
+  Only pushes to your **default branch** trigger production deployments. Pushes to other branches trigger preview deployments tied to an open pull request.
+</Note>
+
+## Production vs. Preview Deployments
+
+<CardGroup cols={2}>
+  <Card title="Production" icon="globe">
+    Triggered by every push to your default branch. Serves your live documentation at your configured domain. Readers see this version immediately after a successful build.
+  </Card>
+  <Card title="Preview" icon="eye">
+    Triggered by every push to a pull request branch. Each PR gets its own isolated preview URL. Previews never affect your production docs.
+  </Card>
+</CardGroup>
+
+You can find both production and preview deployments listed in the **Deployments** tab of your Mintlify dashboard.
+
+## View Deployment Status
+
+Open the [Mintlify dashboard](https://dashboard.mintlify.com) and navigate to **Deployments** in the left sidebar. The deployments list shows:
+
+| Column | Description |
+|---|---|
+| **Status** | `Building`, `Success`, or `Failed` |
+| **Commit** | The Git commit SHA and message that triggered this build |
+| **Branch** | The branch the commit was pushed to |
+| **Duration** | How long the build took |
+| **Deployed at** | Timestamp of when the deployment went live |
+
+Click any deployment row to open its detail view and access the full build log.
+
+## Read Deployment Logs
+
+Deployment logs are your primary tool for diagnosing build failures. Each log entry is timestamped and categorized by severity.
+
+<Tabs>
+  <Tab title="Successful build log">
+    ```
+    [12:04:01] Starting build for commit a3f9c2d
+    [12:04:01] Reading docs.json...
+    [12:04:02] Resolved 42 pages across 6 navigation groups
+    [12:04:02] Compiling MDX files...
+    [12:04:08] All pages compiled successfully
+    [12:04:08] Optimizing assets...
+    [12:04:10] Build complete in 9s
+    [12:04:10] Deploying to production...
+    [12:04:11] Deployment live at https://docs.example.com
+    ```
+  </Tab>
+  <Tab title="Failed build log">
+    ```
+    [12:06:14] Starting build for commit d91bb47
+    [12:06:14] Reading docs.json...
+    [12:06:15] Resolved 43 pages across 6 navigation groups
+    [12:06:15] Compiling MDX files...
+    [12:06:17] Error in guides/api-reference.mdx (line 38):
+    [12:06:17]   Unexpected token. Did you close all JSX tags?
+    [12:06:17]   <CodeGroup>
+    [12:06:17]     <code>...</code>   <-- missing closing </CodeGroup>
+    [12:06:17] Build failed after 3s
+    ```
+  </Tab>
+</Tabs>
+
+<Tip>
+  When a build fails, Mintlify keeps your previous production deployment live. Your readers always see the last successful build while you fix the error.
+</Tip>
+
+## Roll Back to a Previous Deployment
+
+If a deployment introduces a problem, you can instantly roll back to any previous successful deployment.
+
+<Steps>
+  <Step title="Open the Deployments list">
+    In the Mintlify dashboard, go to **Deployments** and find the last known-good deployment in the list.
+  </Step>
+  <Step title="Select the target deployment">
+    Click the deployment row to open its detail view.
+  </Step>
+  <Step title="Click Redeploy">
+    Click the **Redeploy** button in the top-right corner. Mintlify immediately promotes that build back to production without re-running a new build — the rollback takes effect in seconds.
+  </Step>
+</Steps>
+
+<Warning>
+  Rolling back does not revert your Git history. Your repository stays on the current commit. To make the rollback permanent, revert or fix the problematic commit in GitHub and let the resulting push trigger a new deployment.
+</Warning>
+
+## Preview Locally with the CLI
+
+Before pushing changes to GitHub, you can run a full local preview of your documentation using the Mintlify CLI. This catches errors instantly without waiting for a remote build.
+
+### Install the CLI
+
+```bash
+npm install -g mintlify
+```
+
+### Start the local dev server
+
+Run the following command from the root of your documentation repository (where `docs.json` lives):
+
+```bash
+mint dev
+```
+
+**Expected output:**
+
+```
+Mintlify v4.x.x — Local Development Server
+
+✓ docs.json loaded
+✓ 42 pages resolved
+✓ Navigation validated
+
+  Local:   http://localhost:3000
+  Network: http://192.168.1.10:3000
+
+Watching for file changes...
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to see your docs. The dev server hot-reloads on every file save — edit an MDX file and the browser updates instantly.
+
+<CodeGroup>
+
+```bash npm
+npm install -g mintlify
+mint dev
+```
+
+```bash yarn
+yarn global add mintlify
+mint dev
+```
+
+```bash pnpm
+pnpm add -g mintlify
+mint dev
+```
+
+</CodeGroup>
+
+<Note>
+  The local dev server mirrors your production build as closely as possible, but a few features (custom domains, analytics integrations) are only active in production deployments.
+</Note>
+
+## Common Deployment Errors
+
+<AccordionGroup>
+  <Accordion title="Page listed in docs.json not found">
+    A page path referenced in your `docs.json` navigation does not have a corresponding `.mdx` file. Double-check spelling and ensure the file exists at the exact path listed.
+  </Accordion>
+  <Accordion title="Invalid docs.json — JSON parse error">
+    Your `docs.json` contains a syntax error (missing comma, trailing comma, unclosed bracket). Validate the file with a JSON linter before pushing.
+  </Accordion>
+  <Accordion title="MDX compilation error">
+    An MDX file contains invalid syntax — usually an unclosed JSX tag or an illegal character in a code block. The build log pinpoints the exact file and line number.
+  </Accordion>
+  <Accordion title="Build timeout">
+    Builds that exceed the time limit are cancelled. This is rare and usually caused by an extremely large number of pages or assets. Contact [support@mintlify.com](mailto:support@mintlify.com) if you hit this consistently.
+  </Accordion>
+</AccordionGroup>
