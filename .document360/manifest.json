@@ -1,0 +1,11 @@
+{
+  "serializerVersion": 1,
+  "workspace": {
+    "guid": "a00cc6bc-a80d-42c2-b8de-8641686bbc35",
+    "name": "v1"
+  },
+  "anchorLanguage": "en",
+  "languages": [
+    { "code": "en", "default": true }
+  ]
+}
